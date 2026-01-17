@@ -5,8 +5,8 @@ export default function Modal({ isOpen, onClose, children }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <button className="close-btn" onClick={onClose}>×</button>
+      <div className="modal-box enhanced-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="close-btn enhanced-close" onClick={onClose}>×</button>
         {children}
       </div>
     </div>
