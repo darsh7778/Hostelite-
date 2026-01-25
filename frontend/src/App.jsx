@@ -13,6 +13,10 @@ import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
 import StudentPayment from "./pages/StudentPayment";
+import AdvancePayment from "./pages/AdvancePayment";
+import RazorpayPayment from "./pages/RazorpayPayment";
+import UpiPayment from "./pages/UpiPayment";
+import DebitCardPayment from "./pages/DebitCardPayment";
 
 export default function App() {
   return (
@@ -57,6 +61,42 @@ export default function App() {
             element={
               <ProtectedRoute role="student">
                 <StudentPayment />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/advance-payment"
+            element={
+              <ProtectedRoute role="student">
+                <AdvancePayment />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/razorpay-payment"
+            element={
+              <ProtectedRoute role="student">
+                <RazorpayPayment />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/upi-payment"
+            element={
+              <ProtectedRoute role="student">
+                <UpiPayment />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/debit-card-payment"
+            element={
+              <ProtectedRoute role="student">
+                <DebitCardPayment />
               </ProtectedRoute>
             }
           />

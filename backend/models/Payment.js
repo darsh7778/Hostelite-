@@ -1,36 +1,51 @@
-const Payment = require("../models/Payment");
+const mongoose = require("mongoose");
 
-// Pay hostel fee
-exports.payHostelFee = async (req, res) => {
-  try {
-    const { amount, month } = req.body;
-
-    if (!amount || !month) {
-      return res.status(400).json({ message: "Amount and month are required" });
-    }
-
-    const newPayment = new Payment({
-      student: req.user._id,
-      amount,
-      month,
-    });
-
-    await newPayment.save();
-
-    res.status(201).json({ message: "Payment successful", payment: newPayment });
-  } catch (error) {
-    console.error("Payment Error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+const paymentSchema = new mongoose.Schema({
+  studentId: {
+    type: String,
+    required: true,
+    ref: "User"
+  },
+  studentName: {
+    type: String,
+    required: true
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  status: {
+    type: String,
+    enum: ["pending", "completed", "failed"],
+    default: "pending"
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  },
+  razorpayOrderId: {
+    type: String,
+    sparse: true
+  },
+  razorpayPaymentId: {
+    type: String,
+    sparse: true
+  },
+  razorpaySignature: {
+    type: String,
+    sparse: true
+  },
+  month: {
+    type: String,
+    required: false
+  },
+  description: {
+    type: String,
+    default: "Hostel Fee Payment"
   }
-};
+}, {
+  timestamps: true
+});
 
-// Get all payments of logged-in user
-exports.getPayments = async (req, res) => {
-  try {
-    const payments = await Payment.find({ student: req.user._id });
-    res.json({ payments });
-  } catch (error) {
-    console.error("Get Payments Error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
+module.exports = mongoose.model("Payment", paymentSchema);

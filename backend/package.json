@@ -17,6 +17,7 @@
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.0.0",
     "mongoose": "^8.12.1",
     "openai": "^4.47.0",
     "razorpay": "^2.9.6"

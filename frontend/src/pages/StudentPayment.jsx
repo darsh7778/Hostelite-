@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/payment.css";
@@ -14,11 +15,13 @@ import {
     X,
     Download,
     Filter,
-    IndianRupee
+    IndianRupee,
+    Zap
 } from "lucide-react";
 
 export default function StudentPayment() {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [amount, setAmount] = useState("");
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -26,10 +29,25 @@ export default function StudentPayment() {
     const [payments, setPayments] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState("all");
+    const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
     useEffect(() => {
         fetchPaymentHistory();
+        loadRazorpayScript();
     }, []);
+
+    const loadRazorpayScript = () => {
+        if (window.Razorpay) {
+            setRazorpayLoaded(true);
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onload = () => setRazorpayLoaded(true);
+        document.body.appendChild(script);
+    };
 
     const fetchPaymentHistory = async () => {
         try {
@@ -64,30 +82,72 @@ export default function StudentPayment() {
 
     const handlePayment = async (e) => {
         e.preventDefault();
-        if (!isFormValid) return;
+        if (!isFormValid || !razorpayLoaded) return;
 
         setLoading(true);
         setShowError(false);
         
         try {
-            await API.post("/payments", {
+            // Create Razorpay order
+            const response = await API.post("/payments/create-order", {
+                amount: parseFloat(amount),
                 studentId: user._id,
                 studentName: user.name,
-                amount,
-                status: "pending",
-                date: new Date(),
             });
-            setShowSuccess(true);
-            setAmount("");
-            fetchPaymentHistory(); // refresh history after new payment
-            
-            // Hide success message after 3 seconds
-            setTimeout(() => setShowSuccess(false), 3000);
+
+            const { order, paymentId } = response.data;
+
+            // Razorpay checkout options
+            const options = {
+                key: process.env.REACT_APP_RAZORPAY_KEY_ID || "rzp_test_YourKeyHere",
+                amount: order.amount,
+                currency: order.currency,
+                name: "Hostelite",
+                description: "Hostel Fee Payment",
+                order_id: order.id,
+                handler: async function (response) {
+                    try {
+                        // Verify payment on backend
+                        const verifyResponse = await API.post("/payments/verify-payment", {
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature,
+                            paymentId: paymentId,
+                        });
+
+                        if (verifyResponse.data.success) {
+                            setShowSuccess(true);
+                            setAmount("");
+                            fetchPaymentHistory();
+                            setTimeout(() => setShowSuccess(false), 3000);
+                        }
+                    } catch (error) {
+                        console.error("Payment verification error:", error);
+                        setShowError(true);
+                        setTimeout(() => setShowError(false), 3000);
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                },
+                theme: {
+                    color: "#3b82f6",
+                },
+                modal: {
+                    ondismiss: function() {
+                        setLoading(false);
+                    }
+                }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
         } catch (error) {
-            console.error(error);
+            console.error("Payment Error:", error);
             setShowError(true);
             setTimeout(() => setShowError(false), 3000);
-        } finally {
             setLoading(false);
         }
     };
@@ -107,6 +167,55 @@ export default function StudentPayment() {
             month: 'short',
             day: 'numeric'
         });
+    };
+
+    const downloadReceipt = (payment) => {
+        const receiptData = {
+            receiptId: `RCP-${payment._id.slice(-8).toUpperCase()}`,
+            studentName: payment.studentName,
+            studentId: payment.studentId,
+            amount: formatCurrency(payment.amount),
+            date: formatDate(payment.date),
+            status: payment.status,
+            paymentId: payment.razorpayPaymentId || 'N/A',
+            orderId: payment.razorpayOrderId || 'N/A',
+        };
+
+        const receiptContent = `
+========================================
+           HOSTEL FEE RECEIPT           
+========================================
+
+Receipt ID: ${receiptData.receiptId}
+Date: ${receiptData.date}
+
+Student Information:
+-------------------
+Name: ${receiptData.studentName}
+ID: ${receiptData.studentId}
+
+Payment Details:
+---------------
+Amount: ${receiptData.amount}
+Status: ${receiptData.status}
+Payment ID: ${receiptData.paymentId}
+Order ID: ${receiptData.orderId}
+
+========================================
+This is a computer generated receipt.
+For any queries, please contact the hostel office.
+========================================
+        `.trim();
+
+        const blob = new Blob([receiptContent], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `receipt_${receiptData.receiptId}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
     };
 
     return (
@@ -185,19 +294,38 @@ export default function StudentPayment() {
                         <button 
                             type="submit" 
                             className={`submit-btn ${!isFormValid ? 'disabled' : ''}`}
-                            disabled={!isFormValid || loading}
+                            disabled={!isFormValid || loading || !razorpayLoaded}
                         >
                             {loading ? (
                                 <>
                                     <Loader2 size={20} className="spinner" />
                                     Processing...
                                 </>
+                            ) : !razorpayLoaded ? (
+                                <>
+                                    <Loader2 size={20} className="spinner" />
+                                    Loading Payment Gateway...
+                                </>
                             ) : (
                                 <>
                                     <CreditCard size={20} />
-                                    Pay Hostel Fees
+                                    Pay with Razorpay
                                 </>
                             )}
+                        </button>
+
+                        <button 
+                            type="button"
+                            className="secondary-btn"
+                            onClick={() => {
+                                console.log("Advanced Payment Options clicked");
+                                console.log("User:", user);
+                                console.log("Navigating to /advance-payment");
+                                navigate("/advance-payment");
+                            }}
+                        >
+                            <Zap size={20} />
+                            Advanced Payment Options
                         </button>
                     </form>
                 </div>
@@ -284,7 +412,11 @@ export default function StudentPayment() {
                                         </div>
                                         <div className="cell actions-cell">
                                             {payment.status === "completed" && (
-                                                <button className="receipt-btn" title="Download Receipt">
+                                                <button 
+                                                    className="receipt-btn" 
+                                                    title="Download Receipt"
+                                                    onClick={() => downloadReceipt(payment)}
+                                                >
                                                     <Download size={16} />
                                                 </button>
                                             )}
