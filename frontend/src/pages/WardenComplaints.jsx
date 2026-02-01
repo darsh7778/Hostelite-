@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
-import "../styles/WardenComplaints.css"; 
+import "../styles/WardenComplaints.css";
 
 export default function WardenComplaints() {
     const { user } = useAuth();
@@ -21,25 +21,37 @@ export default function WardenComplaints() {
                 ? res.data
                 : res.data.complaints || [];
 
-            // Only show pending complaints
-            setComplaints(complaintsArray.filter(c => c.status === "pending"));
+            // Show ONLY pending complaints
+            const pendingComplaints = complaintsArray.filter(
+                (c) => c.status === "pending"
+            );
+
+            setComplaints(pendingComplaints);
             setLoading(false);
         } catch (error) {
-            alert("Failed to load complaints");
-            setLoading(false);
-        }
+    console.error("Update error:", error.response || error);
+    alert(
+        error.response?.data?.message ||
+        "Failed to update status"
+    );
+    setProcessingId(null);
+}
     };
 
     const markAsResolved = async (id) => {
         try {
             setProcessingId(id);
+
             await API.put(`/complaints/${id}`, { status: "resolved" });
 
-            // Remove the complaint from local state immediately
-            setComplaints(prev => prev.filter(c => c._id !== id));
+            // REMOVE resolved complaint immediately from UI
+            setComplaints((prevComplaints) =>
+                prevComplaints.filter((c) => c._id !== id)
+            );
 
             setProcessingId(null);
         } catch (error) {
+            console.error(error);
             alert("Failed to update status");
             setProcessingId(null);
         }
@@ -52,21 +64,37 @@ export default function WardenComplaints() {
             <h2>Warden – Student Complaints</h2>
 
             {complaints.length === 0 ? (
-                <p className="no-complaints">No pending complaints</p>
+                <p className="no-complaints">No pending complaints 🎉</p>
             ) : (
                 <div className="complaints-grid">
                     {complaints.map((complaint) => (
                         <div key={complaint._id} className="complaint-card">
-                            <p><b>Student:</b> {complaint.student?.name || "Unknown"}</p>
-                            <p><b>Issue:</b> {complaint.title || complaint.message}</p>
-                            <p><b>Status:</b> {complaint.status || "pending"}</p>
+                            <p>
+                                <b>Student:</b>{" "}
+                                {complaint.student?.name || "Unknown"}
+                            </p>
+
+                            {/* FIXED: show description only */}
+                            <p>
+                                <b>Complaint:</b>{" "}
+                                {complaint.description}
+                            </p>
+
+                            <p>
+                                <b>Status:</b>{" "}
+                                <span className="status pending">
+                                    {complaint.status}
+                                </span>
+                            </p>
 
                             <button
                                 className="resolve-btn"
                                 disabled={processingId === complaint._id}
                                 onClick={() => markAsResolved(complaint._id)}
                             >
-                                {processingId === complaint._id ? "Processing..." : "Mark as Resolved"}
+                                {processingId === complaint._id
+                                    ? "Processing..."
+                                    : "Mark as Resolved"}
                             </button>
                         </div>
                     ))}

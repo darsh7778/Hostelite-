@@ -13,41 +13,41 @@ import {
   FileText,
   CreditCard,
   AlertCircle,
-  Star,
   Utensils,
   Wrench,
   ChevronRight,
-  Bell,
   CheckCircle,
   Clock,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // -------------------- ALL HOOKS AT THE TOP --------------------
   const [stats, setStats] = useState({
     students: 0,
     wardens: 0,
     total: 0,
     payments: 0,
-    complaints: { pending: 0, resolved: 0 }
+    complaints: { pending: 0, resolved: 0 },
   });
-
   const [search, setSearch] = useState("");
   const [complaints, setComplaints] = useState([]);
-  const [todayMenu, setTodayMenu] = useState("Breakfast: 8:00-9:00 AM, Lunch: 12:30-1:30 PM, Dinner: 7:30-8:30 PM");
 
-  // ADMIN: Fetch user stats
+  // -------------------- FETCH DATA BASED ON ROLE --------------------
   useEffect(() => {
-    if (user?.role === "admin") {
+    if (!user) return;
+
+    if (user.role === "admin") {
       fetchStats();
-    } else if (user?.role === "warden") {
+    } else if (user.role === "warden") {
       fetchComplaints();
     }
   }, [user]);
 
+  // -------------------- FETCH FUNCTIONS --------------------
   const fetchStats = async () => {
     try {
       const res = await API.get("/users");
@@ -60,36 +60,45 @@ export default function Dashboard() {
         students,
         wardens,
         total: users.length,
-        payments: Math.floor(Math.random() * 50) + 10, // Mock data
-        complaints: { pending: Math.floor(Math.random() * 20) + 5, resolved: Math.floor(Math.random() * 30) + 10 }
+        payments: Math.floor(Math.random() * 50) + 10, // mock payments
+        complaints: { pending: 0, resolved: 0 }, // handled separately
       });
     } catch (err) {
-      console.error("Failed to fetch stats");
+      console.error("Failed to fetch stats:", err);
     }
   };
 
   const fetchComplaints = async () => {
     try {
-      // Mock complaints data for demo
-      const mockComplaints = [
-        { id: 1, title: "Water leakage in room 201", status: "pending", priority: "high" },
-        { id: 2, title: "WiFi not working in wing B", status: "resolved", priority: "medium" },
-        { id: 3, title: "Light bulb broken in corridor", status: "pending", priority: "low" }
-      ];
-      setComplaints(mockComplaints);
+      const res = await API.get("/complaints");
+      setComplaints(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error("Failed to fetch complaints");
+      console.error("Failed to fetch complaints:", err);
     }
   };
 
+  // -------------------- SEARCH --------------------
   const handleSearch = () => {
     if (!search.trim()) return;
     navigate(`/admin/users?search=${search}`);
   };
 
+  const countResolvedToday = () => {
+    const today = new Date();
+    return complaints.filter((c) => {
+      if (c.status !== "resolved") return false;
+      const resolvedAt = new Date(c.updatedAt || c.resolvedAt);
+      return (
+        resolvedAt.getDate() === today.getDate() &&
+        resolvedAt.getMonth() === today.getMonth() &&
+        resolvedAt.getFullYear() === today.getFullYear()
+      );
+    }).length;
+  };
+
+  // -------------------- RENDER --------------------
   return (
     <div className="dashboard-container">
-
       {/* MODERN HEADER */}
       <div className="dashboard-header">
         <div className="header-content">
@@ -114,7 +123,7 @@ export default function Dashboard() {
               placeholder="Quick user lookup..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               className="search-input"
             />
             <button onClick={handleSearch} className="search-btn">
@@ -124,41 +133,40 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ================= ADMIN STATS ================= */}
+      {/* ADMIN STATS */}
       {user?.role === "admin" && (
         <>
           <div className="admin-stats">
-            <StatCard 
-              title="Total Users" 
-              value={stats.total} 
+            <StatCard
+              title="Total Users"
+              value={stats.total}
               icon={<Users size={24} />}
               color="blue"
               trend="+15%"
             />
-            <StatCard 
-              title="Students" 
-              value={stats.students} 
+            <StatCard
+              title="Students"
+              value={stats.students}
               icon={<UserCheck size={24} />}
               color="green"
               trend="+12%"
             />
-            <StatCard 
-              title="Wardens" 
-              value={stats.wardens} 
+            <StatCard
+              title="Wardens"
+              value={stats.wardens}
               icon={<Shield size={24} />}
               color="orange"
               trend="+5%"
             />
-            <StatCard 
-              title="Payments" 
-              value={stats.payments} 
+            <StatCard
+              title="Payments"
+              value={stats.payments}
               icon={<CreditCard size={24} />}
               color="purple"
               trend="+18%"
             />
           </div>
 
-          {/* ANALYTICS SECTION */}
           <div className="analytics-section">
             <h2>Quick Analytics</h2>
             <div className="analytics-grid">
@@ -183,7 +191,7 @@ export default function Dashboard() {
         </>
       )}
 
-      {/* ================= WARDEN COMPLAINTS SUMMARY ================= */}
+      {/* WARDEN COMPLAINTS SUMMARY */}
       {user?.role === "warden" && (
         <div className="warden-summary">
           <div className="summary-cards">
@@ -191,35 +199,61 @@ export default function Dashboard() {
               <AlertTriangle size={24} />
               <div className="summary-content">
                 <h3>Pending Complaints</h3>
-                <div className="summary-value">{complaints.filter(c => c.status === 'pending').length}</div>
+                <div className="summary-value">
+                  {complaints.filter((c) => c.status === "pending").length}
+                </div>
               </div>
             </div>
             <div className="summary-card resolved">
               <CheckCircle size={24} />
               <div className="summary-content">
                 <h3>Resolved Today</h3>
-                <div className="summary-value">{complaints.filter(c => c.status === 'resolved').length}</div>
+                <div className="summary-value">{countResolvedToday()}</div>
               </div>
             </div>
           </div>
-          
+
           {complaints.length > 0 && (
             <div className="recent-complaints">
               <h3>Recent Complaints</h3>
               <div className="complaint-list">
-                {complaints.slice(0, 3).map(complaint => (
-                  <div key={complaint.id} className={`complaint-item ${complaint.status}`}>
+                {complaints.slice(0, 5).map((complaint) => (
+                  <div
+                    key={complaint._id}
+                    className={`complaint-item ${complaint.status}`}
+                  >
                     <div className="complaint-priority">
-                      {complaint.priority === 'high' && <AlertCircle size={16} />}
-                      {complaint.priority === 'medium' && <Clock size={16} />}
-                      {complaint.priority === 'low' && <CheckCircle size={16} />}
+                      {complaint.priority === "high" && <AlertCircle size={16} />}
+                      {complaint.priority === "medium" && <Clock size={16} />}
+                      {complaint.priority === "low" && <CheckCircle size={16} />}
                     </div>
                     <div className="complaint-content">
-                      <p>{complaint.title}</p>
+                      <p>{complaint.title || complaint.description}</p>
                       <span className={`status-badge ${complaint.status}`}>
                         {complaint.status}
                       </span>
                     </div>
+                    {complaint.status === "pending" && (
+                      <button
+                        className="resolve-btn"
+                        onClick={async () => {
+                          try {
+                            await API.put(`/complaints/${complaint._id}`, {
+                              status: "resolved",
+                            });
+                            fetchComplaints();
+                          } catch (err) {
+                            console.error(
+                              "Failed to update complaint:",
+                              err.response?.data || err.message
+                            );
+                            alert("Failed to update status");
+                          }
+                        }}
+                      >
+                        Resolve
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -228,51 +262,39 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ================= DASHBOARD CARDS ================= */}
+      {/* DASHBOARD CARDS */}
       <div className="dashboard-grid">
-
-        {/* STUDENT */}
         {user?.role === "student" && (
           <>
             <DashboardCard
               title="Complaint Status"
               description="Track your hostel complaints"
               icon={<Wrench size={32} />}
-              badge="2 Active"
+              badge={`${complaints.filter((c) => c.status === "pending").length} Pending`}
               onClick={() => navigate("/complaints")}
-            />
-            <DashboardCard
-              title="Today's Menu"
-              description={todayMenu}
-              icon={<Utensils size={32} />}
-              badge="New"
-              onClick={() => navigate("/menu")}
             />
             <DashboardCard
               title="Fee Payment"
               description="Pay hostel fees online"
               icon={<CreditCard size={32} />}
-              badge="Due Soon"
               onClick={() => navigate("/payments")}
             />
             <DashboardCard
-              title="Rate Meal"
-              description="Rate today's food quality"
-              icon={<Star size={32} />}
-              badge="Rate Now"
-              onClick={() => navigate("/ratings")}
+              title="Today's Meals"
+              description="See today's meal plan"
+              icon={<Utensils size={32} />}
+              onClick={() => navigate("/student/meals")}
             />
           </>
         )}
 
-        {/* WARDEN */}
         {user?.role === "warden" && (
           <>
             <DashboardCard
               title="Manage Complaints"
               description="Handle student complaints"
               icon={<AlertCircle size={32} />}
-              badge={`${complaints.filter(c => c.status === 'pending').length} Pending`}
+              badge={`${complaints.filter((c) => c.status === "pending").length} Pending`}
               onClick={() => navigate("/warden/complaints")}
             />
             <DashboardCard
@@ -285,7 +307,6 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* ADMIN */}
         {user?.role === "admin" && (
           <>
             <DashboardCard
@@ -319,14 +340,11 @@ export default function Dashboard() {
   );
 }
 
-/* ================= COMPONENTS ================= */
-
+// -------------------- COMPONENTS --------------------
 function DashboardCard({ title, description, onClick, icon, badge }) {
   return (
     <div className="dashboard-card" onClick={onClick}>
-      <div className="card-icon">
-        {icon}
-      </div>
+      <div className="card-icon">{icon}</div>
       <div className="card-content">
         <h3>{title}</h3>
         <p>{description}</p>
@@ -340,9 +358,7 @@ function DashboardCard({ title, description, onClick, icon, badge }) {
 function StatCard({ title, value, icon, color, trend }) {
   return (
     <div className={`stat-card ${color}`}>
-      <div className="stat-icon">
-        {icon}
-      </div>
+      <div className="stat-icon">{icon}</div>
       <div className="stat-content">
         <h4>{title}</h4>
         <p className="stat-value">{value}</p>
@@ -350,4 +366,4 @@ function StatCard({ title, value, icon, color, trend }) {
       </div>
     </div>
   );
-}
+} 

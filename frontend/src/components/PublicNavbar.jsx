@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/PublicNavbar.css";
 
-export default function PublicNavbar({
-  onLoginClick,
-  onAboutClick,
-  onServicesClick,
-}) {
+export default function PublicNavbar({ onLoginClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -19,26 +15,41 @@ export default function PublicNavbar({
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!element) return;
+
+    const navbarHeight = 80; // adjust if needed
+    const elementPosition =
+      element.getBoundingClientRect().top + window.scrollY;
+
+    window.scrollTo({
+      top: elementPosition - navbarHeight,
+      behavior: "smooth",
+    });
+
+    setMenuOpen(false);
   };
 
   return (
     <nav className={`public-navbar ${scrolled ? "scrolled" : ""}`}>
-      <div className="logo" onClick={() => scrollToSection("hero")}>Hostelite</div>
+      <div className="logo" onClick={() => scrollToSection("hero")}>
+        Hostelite
+      </div>
 
       {/* DESKTOP MENU */}
       <ul className="nav-links">
         <li onClick={() => scrollToSection("about")}>About</li>
-        <li onClick={() => scrollToSection("facilities-carousel")}>Facilities</li>
+        <li onClick={() => scrollToSection("facilities-carousel")}>
+          Facilities
+        </li>
         <li onClick={() => scrollToSection("services")}>Services</li>
-        <li onClick={() => scrollToSection("testimonials")}>Testimonials</li>
-        <li onClick={() => scrollToSection("services")}>Features</li>
-        <li onClick={() => scrollToSection("about")}>Support</li>
+        <li onClick={() => scrollToSection("testimonials")}>
+          Testimonials
+        </li>
+        <li onClick={() => scrollToSection("features")}>Features</li>
+        <li onClick={() => scrollToSection("support")}>Support</li>
       </ul>
 
-      {/* SEARCH AND ACTIONS */}
+      {/* ACTIONS */}
       <div className="nav-actions">
         <button className="contact-btn">Contact</button>
         <button className="signin-btn desktop-only" onClick={onLoginClick}>
@@ -59,62 +70,18 @@ export default function PublicNavbar({
       {/* MOBILE MENU */}
       {menuOpen && (
         <div className="mobile-menu">
-          <p
-            onClick={() => {
-              scrollToSection("about");
-              setMenuOpen(false);
-            }}
-          >
-            About
-          </p>
-          <p
-            onClick={() => {
-              scrollToSection("facilities-carousel");
-              setMenuOpen(false);
-            }}
-          >
+          <p onClick={() => scrollToSection("about")}>About</p>
+          <p onClick={() => scrollToSection("facilities")}>
             Facilities
           </p>
-          <p
-            onClick={() => {
-              scrollToSection("services");
-              setMenuOpen(false);
-            }}
-          >
-            Services
-          </p>
-          <p
-            onClick={() => {
-              scrollToSection("testimonials");
-              setMenuOpen(false);
-            }}
-          >
+          <p onClick={() => scrollToSection("services")}>Services</p>
+          <p onClick={() => scrollToSection("testimonials")}>
             Testimonials
           </p>
-          <p
-            onClick={() => {
-              scrollToSection("services");
-              setMenuOpen(false);
-            }}
-          >
-            Features
-          </p>
-          <p
-            onClick={() => {
-              scrollToSection("about");
-              setMenuOpen(false);
-            }}
-          >
-            Support
-          </p>
-          <p
-            onClick={() => {
-              setMenuOpen(false);
-              // Open contact modal or scroll to contact section
-            }}
-          >
-            Contact
-          </p>
+          <p onClick={() => scrollToSection("features")}>Features</p>
+          <p onClick={() => scrollToSection("support")}>Support</p>
+          <p>Contact</p>
+
           <button
             className="signin-btn"
             onClick={() => {

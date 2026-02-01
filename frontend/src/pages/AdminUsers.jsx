@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "../styles/AdminUsers.css";
 
@@ -6,9 +7,15 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", role: "student" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "student",
+  });
   const [processingUser, setProcessingUser] = useState(null);
   const [search, setSearch] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -19,31 +26,33 @@ export default function AdminUsers() {
       setLoading(true);
       const res = await API.get("/users");
       setUsers(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
+    } catch {
       alert("Failed to fetch users");
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= SEARCH FILTER ================= */
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase()),
   );
 
-  /* ================= HIGHLIGHT ================= */
   const highlight = (text) => {
     if (!search) return text;
     const regex = new RegExp(`(${search})`, "gi");
-    return text.split(regex).map((part, i) =>
-      part.toLowerCase() === search.toLowerCase()
-        ? <mark key={i}>{part}</mark>
-        : part
-    );
+    return text
+      .split(regex)
+      .map((part, i) =>
+        part.toLowerCase() === search.toLowerCase() ? (
+          <mark key={i}>{part}</mark>
+        ) : (
+          part
+        ),
+      );
   };
 
-  /* ================= EDIT ================= */
   const startEdit = (user) => {
     setEditingUser(user._id);
     setFormData({ name: user.name, email: user.email, role: user.role });
@@ -58,9 +67,8 @@ export default function AdminUsers() {
     try {
       setProcessingUser(id);
       await API.put(`/users/${id}`, formData);
-      // update state directly after successful edit
       setUsers((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...formData } : u))
+        prev.map((u) => (u._id === id ? { ...u, ...formData } : u)),
       );
       cancelEdit();
     } catch (err) {
@@ -70,18 +78,15 @@ export default function AdminUsers() {
     }
   };
 
-  /* ================= DELETE ================= */
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
 
     try {
       setProcessingUser(id);
       await API.delete(`/users/${id}`);
-      // remove deleted user from state
       setUsers((prev) => prev.filter((u) => u._id !== id));
     } catch (err) {
-      console.error("DELETE ERROR:", err.response || err);
-      alert(err.response?.data?.message || "Delete failed – check backend");
+      alert(err.response?.data?.message || "Delete failed");
     } finally {
       setProcessingUser(null);
     }
@@ -93,7 +98,6 @@ export default function AdminUsers() {
     <div className="admin-users-container">
       <h2>Manage Users</h2>
 
-      {/* SEARCH */}
       <input
         type="text"
         className="search-input"
@@ -127,7 +131,12 @@ export default function AdminUsers() {
                       }
                     />
                   ) : (
-                    highlight(user.name)
+                    <span
+                      className="clickable-name"
+                      onClick={() => navigate(`/admin/users/${user._id}`)}
+                    >
+                      {highlight(user.name)}
+                    </span>
                   )}
                 </td>
 
@@ -165,21 +174,24 @@ export default function AdminUsers() {
                   {user.role !== "admin" ? (
                     editingUser === user._id ? (
                       <>
-                        <button onClick={() => submitEdit(user._id)}>Save</button>
+                        <button onClick={() => submitEdit(user._id)}>
+                          Save
+                        </button>
                         <button onClick={cancelEdit}>Cancel</button>
                       </>
                     ) : (
                       <>
                         <button onClick={() => startEdit(user)}>Edit</button>
-                        <button onClick={() => deleteUser(user._id)}>Delete</button>
+                        <button onClick={() => deleteUser(user._id)}>
+                          Delete
+                        </button>
                       </>
                     )
                   ) : (
                     "Admin"
                   )}
-
                   {processingUser === user._id && (
-                    <span className="processing-text">Processing...</span>
+                    <span className="processing-text"> Processing...</span>
                   )}
                 </td>
               </tr>

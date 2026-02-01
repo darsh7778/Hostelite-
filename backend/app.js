@@ -19,6 +19,11 @@ app.use("/api/ratings", require("./routes/ratingRoutes"));
 app.use("/api/complaints", require("./routes/complaintRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/meals", require("./routes/mealRoutes"));
+
+
+
+
 
 // Test
 app.get("/", (req, res) => res.send("Hostelite Backend Running"));

@@ -7,18 +7,21 @@ const complaintSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
+    warden: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     title: {
       type: String,
       required: true,
       trim: true,
     },
-
     description: {
       type: String,
       required: true,
+      minlength: 10,
+      trim: true,
     },
-
     status: {
       type: String,
       enum: ["pending", "resolved"],

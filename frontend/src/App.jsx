@@ -13,12 +13,13 @@ import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
 import StudentPayment from "./pages/StudentPayment";
+import WardenMeals from "./pages/WardenMeals";
+import StudentMeals from "./pages/StudentMeals";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* ================= PUBLIC ROUTES ================= */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
@@ -90,10 +91,11 @@ export default function App() {
             }
           />
         </Route>
+        <Route path="/warden/meals" element={<WardenMeals />} />
+        <Route path="/student/meals" element={<StudentMeals />} />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />
-
       </Routes>
     </BrowserRouter>
   );

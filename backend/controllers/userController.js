@@ -1,65 +1,69 @@
 const User = require("../models/User");
 
-// Get logged-in user profile
+// Logged-in user profile
 const getMyProfile = async (req, res) => {
   try {
-    res.status(200).json(req.user);
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch profile", error: error.message });
+    res.status(500).json({ message: "Failed to fetch user" });
   }
 };
 
-// Get all users (admin only)
+// Admin: get all users
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find().select("-password");
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch users", error: error.message });
+    res.status(500).json({ message: "Failed to fetch users" });
   }
 };
 
-// Update user role (admin only)
+// Admin: update user role
 const updateUserRole = async (req, res) => {
   try {
     const { id } = req.params;
     const { role } = req.body;
-
-    if (!["student", "warden", "admin"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role" });
-    }
-
-    // Prevent admin from changing their own role
-    if (req.user._id.toString() === id) {
-      return res.status(400).json({ message: "Cannot change your own role" });
-    }
 
     const user = await User.findByIdAndUpdate(id, { role }, { new: true });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update role", error: error.message });
+    res.status(500).json({ message: "Failed to update user role" });
   }
 };
 
-// DELETE USER (admin only)
+// Admin: delete user
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Prevent admin from deleting themselves
-    if (req.user._id.toString() === id) {
-      return res.status(400).json({ message: "Cannot delete your own account" });
-    }
-
     const user = await User.findByIdAndDelete(id);
+
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete user", error: error.message });
+    res.status(500).json({ message: "Failed to delete user" });
   }
 };
 
-module.exports = { getMyProfile, getAllUsers, updateUserRole, deleteUser };
+// Get user profile by ID (admin)
+const getUserByIdWithProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+};
+
+module.exports = {
+  getMyProfile,
+  getAllUsers,
+  updateUserRole,
+  deleteUser,
+    getUserByIdWithProfile,
+};
