@@ -9,7 +9,6 @@ exports.registerUser = async (req, res) => {
 
         const { name, email, password, role } = req.body;
 
-    
         if (!name || !email || !password) {
             return res.status(400).json({ message: "Name, email, and password are required" });
         }
@@ -19,13 +18,39 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
+        // ===============================
+        // 🔐 ROLE LIMIT VALIDATIONS (ADDED)
+        // ===============================
+
+        if (role === "admin") {
+            const adminCount = await User.countDocuments({ role: "admin" });
+            if (adminCount >= 1) {
+                return res
+                    .status(403)
+                    .json({ message: "Admin already exists. Cannot create another admin." });
+            }
+        }
+
+        if (role === "warden") {
+            const wardenCount = await User.countDocuments({ role: "warden" });
+            if (wardenCount >= 2) {
+                return res
+                    .status(403)
+                    .json({ message: "Maximum number of wardens already exist." });
+            }
+        }
+
+        // ===============================
+        // USER CREATION (UNCHANGED)
+        // ===============================
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new User({
             name,
             email,
             password: hashedPassword,
-            role: role || "student", 
+            role: role || "student",
         });
 
         await newUser.save();
@@ -37,7 +62,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// LOGIN
+// LOGIN (UNCHANGED)
 exports.loginUser = async (req, res) => {
     try {
         if (!req.body) return res.status(400).json({ message: "Request body is missing" });

@@ -238,7 +238,7 @@ export default function Register() {
         <form onSubmit={registerHandler} className="auth-form">
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'name' ? 'focused' : ''}`}>
-              <span className="input-icon">👤</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 ref={nameInputRef}
                 type="text"
@@ -256,7 +256,7 @@ export default function Register() {
 
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'email' ? 'focused' : ''}`}>
-              <span className="input-icon">📧</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 ref={emailInputRef}
                 type="email"
@@ -274,7 +274,7 @@ export default function Register() {
 
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'password' ? 'focused' : ''}`}>
-              <span className="input-icon">🔒</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -316,7 +316,7 @@ export default function Register() {
 
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'confirmPassword' ? 'focused' : ''}`}>
-              <span className="input-icon">🔒</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm Password"
@@ -340,7 +340,7 @@ export default function Register() {
 
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'role' ? 'focused' : ''}`}>
-              <span className="input-icon">👀</span>
+              {/* <span className="input-icon"></span> */}
               <select
                 value={role}
                 onChange={(e) => handleInputChange('role', e.target.value)}
@@ -349,9 +349,9 @@ export default function Register() {
                 required
                 className="auth-input"
               >
-                <option value="student">👨‍🎓 Student</option>
-                <option value="warden">🏥 Warden</option>
-                <option value="admin">👨‍💼 Admin</option>
+                <option value="student"> Student</option>
+                <option value="warden">Warden</option>
+                <option value="admin">Admin</option>
               </select>
               <div className="input-border"></div>
             </div>

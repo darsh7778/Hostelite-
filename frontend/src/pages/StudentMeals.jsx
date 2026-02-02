@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import "../styles/StudentMeals.css";
 
 const StudentMeals = () => {
   const [meal, setMeal] = useState(null);
@@ -42,21 +43,21 @@ const StudentMeals = () => {
   }, [today]);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-2">Today's Meal</h2>
+    <div className="student-meals">
+      <h2>Today's Meal</h2>
 
-      <p className="mb-4 text-gray-600">
+      <p className="date-time">
         ⏰ {time.toLocaleTimeString()} | 📅 {today}
       </p>
 
       {!meal ? (
-        <p>Meal not updated yet</p>
+        <p className="empty">Meal not updated yet</p>
       ) : (
-        <>
-          <p>🍳 Breakfast: {meal.breakfast || "Not decided"}</p>
-          <p>🍛 Lunch: {meal.lunch || "Not decided"}</p>
-          <p>🍽 Dinner: {meal.dinner || "Not decided"}</p>
-        </>
+        <div className="meal-list">
+          <p> <span>Breakfast:</span> {meal.breakfast || "Not decided"}</p>
+          <p> <span>Lunch:</span> {meal.lunch || "Not decided"}</p>
+          <p><span>Dinner:</span> {meal.dinner || "Not decided"}</p>
+        </div>
       )}
     </div>
   );

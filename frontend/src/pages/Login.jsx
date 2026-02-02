@@ -130,7 +130,7 @@ export default function Login() {
         {showSuccess && (
           <div className="success-message">
             <div className="success-icon">✨</div>
-            <div className="success-text">Login successful! Redirecting...</div>
+            <div className="success-text">Login successful</div>
             <div className="success-progress"></div>
           </div>
         )}
@@ -145,11 +145,11 @@ export default function Login() {
         <form onSubmit={loginHandler} className="auth-form">
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'email' ? 'focused' : ''}`}>
-              <span className="input-icon">📧</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 ref={emailInputRef}
                 type="email"
-                placeholder="Email address"
+                placeholder="Enter your E-mail"
                 value={email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 onFocus={() => handleInputFocus('email')}
@@ -163,7 +163,7 @@ export default function Login() {
 
           <div className="input-group">
             <div className={`input-wrapper ${isFocused === 'password' ? 'focused' : ''}`}>
-              <span className="input-icon">🔒</span>
+              {/* <span className="input-icon"></span> */}
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"

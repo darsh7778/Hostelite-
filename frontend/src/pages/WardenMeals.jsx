@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import "../styles/WardenMeals.css";
 
 const WardenMeals = () => {
+  const navigate = useNavigate();
+
   const [meals, setMeals] = useState({
     breakfast: "",
     lunch: "",
@@ -44,19 +48,27 @@ const WardenMeals = () => {
     }
   };
 
-  return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-2">Update Today's Meal</h2>
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
-      <p className="mb-4 text-gray-600">
-        ⏰ {time.toLocaleTimeString()} | 📅 {today}
+  return (
+    <div className="warden-meals">
+      {/* Back Button */}
+      <button className="back-btn" onClick={handleBack}>
+        ← Back
+      </button>
+
+      <h2>Update Today's Meal</h2>
+
+      <p className="date-time">
+         {time.toLocaleTimeString()} |  {today}
       </p>
 
       <input
         name="breakfast"
         value={meals.breakfast}
         placeholder="Breakfast"
-        className="border p-2 w-full mb-3"
         onChange={handleChange}
       />
 
@@ -64,7 +76,6 @@ const WardenMeals = () => {
         name="lunch"
         value={meals.lunch}
         placeholder="Lunch"
-        className="border p-2 w-full mb-3"
         onChange={handleChange}
       />
 
@@ -72,14 +83,10 @@ const WardenMeals = () => {
         name="dinner"
         value={meals.dinner}
         placeholder="Dinner"
-        className="border p-2 w-full mb-3"
         onChange={handleChange}
       />
 
-      <button
-        onClick={handleSave}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
+      <button onClick={handleSave}>
         Save Meal
       </button>
     </div>

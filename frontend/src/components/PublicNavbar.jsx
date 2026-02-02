@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/PublicNavbar.css";
 
-export default function PublicNavbar({ onLoginClick }) {
+export default function PublicNavbar({ onLoginClick, onContactClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -38,20 +38,15 @@ export default function PublicNavbar({ onLoginClick }) {
       {/* DESKTOP MENU */}
       <ul className="nav-links">
         <li onClick={() => scrollToSection("about")}>About</li>
-        <li onClick={() => scrollToSection("facilities-carousel")}>
-          Facilities
-        </li>
         <li onClick={() => scrollToSection("services")}>Services</li>
-        <li onClick={() => scrollToSection("testimonials")}>
-          Testimonials
-        </li>
+        <li onClick={() => scrollToSection("testimonials")}>Testimonials</li>
         <li onClick={() => scrollToSection("features")}>Features</li>
-        <li onClick={() => scrollToSection("support")}>Support</li>
       </ul>
 
       {/* ACTIONS */}
       <div className="nav-actions">
-        <button className="contact-btn">Contact</button>
+        <button className="signin-btn desktop-only" onClick={onContactClick}>Contact</button>
+
         <button className="signin-btn desktop-only" onClick={onLoginClick}>
           Sign In
         </button>
@@ -71,16 +66,10 @@ export default function PublicNavbar({ onLoginClick }) {
       {menuOpen && (
         <div className="mobile-menu">
           <p onClick={() => scrollToSection("about")}>About</p>
-          <p onClick={() => scrollToSection("facilities")}>
-            Facilities
-          </p>
           <p onClick={() => scrollToSection("services")}>Services</p>
-          <p onClick={() => scrollToSection("testimonials")}>
-            Testimonials
-          </p>
+          <p onClick={() => scrollToSection("testimonials")}>Testimonials</p>
           <p onClick={() => scrollToSection("features")}>Features</p>
-          <p onClick={() => scrollToSection("support")}>Support</p>
-          <p>Contact</p>
+          <p onClick={onContactClick}>Contact</p>
 
           <button
             className="signin-btn"

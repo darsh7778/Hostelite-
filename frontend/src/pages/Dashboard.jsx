@@ -183,7 +183,9 @@ export default function Dashboard() {
                   <AlertCircle size={20} className="pending-icon" />
                   <span>Pending Complaints</span>
                 </div>
-                <div className="analytics-value">{stats.complaints.pending}</div>
+                <div className="analytics-value">
+                  {stats.complaints.pending}
+                </div>
                 <div className="analytics-subtitle">Need attention</div>
               </div>
             </div>
@@ -223,9 +225,13 @@ export default function Dashboard() {
                     className={`complaint-item ${complaint.status}`}
                   >
                     <div className="complaint-priority">
-                      {complaint.priority === "high" && <AlertCircle size={16} />}
+                      {complaint.priority === "high" && (
+                        <AlertCircle size={16} />
+                      )}
                       {complaint.priority === "medium" && <Clock size={16} />}
-                      {complaint.priority === "low" && <CheckCircle size={16} />}
+                      {complaint.priority === "low" && (
+                        <CheckCircle size={16} />
+                      )}
                     </div>
                     <div className="complaint-content">
                       <p>{complaint.title || complaint.description}</p>
@@ -245,7 +251,7 @@ export default function Dashboard() {
                           } catch (err) {
                             console.error(
                               "Failed to update complaint:",
-                              err.response?.data || err.message
+                              err.response?.data || err.message,
                             );
                             alert("Failed to update status");
                           }
@@ -299,9 +305,8 @@ export default function Dashboard() {
             />
             <DashboardCard
               title="Meal Reports"
-              description="View meal feedback"
+              description="Update daily meal plans"
               icon={<Utensils size={32} />}
-              badge="New Reports"
               onClick={() => navigate("/warden/meals")}
             />
           </>
@@ -321,17 +326,19 @@ export default function Dashboard() {
               icon={<CreditCard size={32} />}
               onClick={() => navigate("/admin/payments")}
             />
+
             <DashboardCard
               title="Hostel Reports"
               description="Generate system reports"
               icon={<FileText size={32} />}
-              onClick={() => navigate("/admin/reports")}
+              onClick={() => navigate("/admin/under-construction")}
             />
+
             <DashboardCard
               title="System Settings"
               description="Configure system preferences"
               icon={<Settings size={32} />}
-              onClick={() => navigate("/admin/settings")}
+              onClick={() => navigate("/admin/under-construction")}
             />
           </>
         )}
@@ -366,4 +373,4 @@ function StatCard({ title, value, icon, color, trend }) {
       </div>
     </div>
   );
-} 
+}

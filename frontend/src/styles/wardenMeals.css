@@ -1,0 +1,120 @@
+/* ===============================
+   WARDEN MEALS – PROFESSIONAL UI
+================================ */
+
+/* Container */
+.warden-meals {
+  max-width: 560px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 28px 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+/* Heading */
+.warden-meals h2 {
+  text-align: center;
+  color: #111827;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Date & Time */
+.warden-meals .date-time {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+/* Inputs */
+.warden-meals input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: #111827;
+  background-color: #f9fafb;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.warden-meals input::placeholder {
+  color: #9ca3af;
+}
+
+.warden-meals input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Button */
+.warden-meals button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+/* .warden-meals button:hover {
+  background: #1e40af;
+} */
+
+.warden-meals button:active {
+  transform: scale(0.98);
+}
+
+/* Disabled button (if any) */
+.warden-meals button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Back Button */
+.warden-meals .back-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: color 0.2s ease;
+}
+
+.warden-meals .back-btn:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+  .warden-meals {
+    margin: 20px 12px;
+    padding: 22px 18px;
+  }
+
+  .warden-meals h2 {
+    font-size: 1.4rem;
+  }
+
+  .warden-meals input,
+  .warden-meals button {
+    font-size: 0.95rem;
+  }
+}

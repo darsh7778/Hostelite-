@@ -2,7 +2,7 @@ const express = require("express");
 const {
   getMyProfile,
   getAllUsers,
-  updateUserRole,
+  updateUser,
   deleteUser,
   getUserByIdWithProfile,
 } = require("../controllers/userController"); // ✅ correct import
@@ -26,10 +26,24 @@ router.get("/", authMiddleware, roleMiddleware(["admin"]), getAllUsers);
 // Get single user by ID with profile (admin only)
 router.get("/:id/profile", authMiddleware, roleMiddleware(["admin"]), getUserByIdWithProfile);
 
-// Update user role (admin only)
-router.put("/:id", authMiddleware, roleMiddleware(["admin"]), updateUserRole);
+// Update user details (admin only)
+router.put("/:id", authMiddleware, roleMiddleware(["admin"]), updateUser);
+
 
 // Delete user (admin only)
 router.delete("/:id", authMiddleware, roleMiddleware(["admin"]), deleteUser);
+
+// Get counts of admins and wardens (admin only)
+router.get("/role-counts", authMiddleware, roleMiddleware(["admin"]), async (req, res) => {
+  try {
+    const adminCount = await require("../models/User").countDocuments({ role: "admin" });
+    const wardenCount = await require("../models/User").countDocuments({ role: "warden" });
+
+    res.json({ adminCount, wardenCount });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch role counts" });
+  }
+});
+
 
 module.exports = router;

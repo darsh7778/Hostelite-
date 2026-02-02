@@ -53,19 +53,22 @@ exports.getComplaints = async (req, res) => {
 
     if (user.role === "student") {
       complaints = await Complaint.find({ student: user._id })
-        .populate("student", "name email")
+        .populate("student", "name email roomNumber")
         .populate("warden", "name")
         .sort({ createdAt: -1 });
-    } else if (user.role === "warden") {
+    } 
+    else if (user.role === "warden") {
       complaints = await Complaint.find({ warden: user._id })
-        .populate("student", "name email")
+        .populate("student", "name email roomNumber")
         .sort({ createdAt: -1 });
-    } else if (user.role === "admin") {
+    } 
+    else if (user.role === "admin") {
       complaints = await Complaint.find()
-        .populate("student", "name email")
+        .populate("student", "name email roomNumber")
         .populate("warden", "name")
         .sort({ createdAt: -1 });
-    } else {
+    } 
+    else {
       return res.status(403).json({ message: "Access denied" });
     }
 
@@ -98,14 +101,21 @@ exports.updateComplaintStatus = async (req, res) => {
     }
 
     // Warden can only update their assigned complaints
-    if (req.user.role === "warden" && !complaint.warden.equals(req.user._id)) {
-      return res.status(403).json({ message: "Not authorized for this complaint" });
+    if (
+      req.user.role === "warden" &&
+      !complaint.warden.equals(req.user._id)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized for this complaint" });
     }
 
     complaint.status = status;
     await complaint.save();
 
-    res.status(200).json({ message: "Complaint status updated", complaint });
+    res
+      .status(200)
+      .json({ message: "Complaint status updated", complaint });
   } catch (error) {
     console.error("Error updating complaint:", error);
     res.status(500).json({ message: error.message || "Server error" });

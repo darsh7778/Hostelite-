@@ -20,18 +20,26 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// Admin: update user role
-const updateUserRole = async (req, res) => {
+// Admin: update user details including role and roomNumber
+const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { role } = req.body;
+    const { name, email, role, roomNumber } = req.body;
 
-    const user = await User.findByIdAndUpdate(id, { role }, { new: true });
+    const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json(user);
+    // Update only the fields that are sent
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (role) user.role = role;
+    if (roomNumber !== undefined) user.roomNumber = roomNumber; // important: allow empty string too
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully", user });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update user role" });
+    res.status(500).json({ message: error.message || "Failed to update user" });
   }
 };
 
@@ -63,7 +71,7 @@ const getUserByIdWithProfile = async (req, res) => {
 module.exports = {
   getMyProfile,
   getAllUsers,
-  updateUserRole,
+  updateUser,
   deleteUser,
     getUserByIdWithProfile,
 };

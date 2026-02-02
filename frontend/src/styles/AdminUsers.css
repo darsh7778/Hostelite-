@@ -1,80 +1,158 @@
+/* Page container */
 .admin-users-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 24px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
+/* Card wrapper */
+.users-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Table */
 .users-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 16px;
+  font-size: 14px;
 }
 
-.users-table th,
-.users-table td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
-}
-
+/* Header */
 .users-table th {
-  background-color: #f5f5f5;
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
+/* Cells */
+.users-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+/* Row hover */
+.users-table tbody tr:hover {
+  background: #f3f4f6;
+}
+
+/* First & last column radius */
+.users-table thead tr th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.users-table thead tr th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Username */
 .user-name {
   cursor: pointer;
+  font-weight: 500;
+  color: #2563eb;
 }
 
-/* Desktop/tablet: show buttons inline */
+.user-name:hover {
+  text-decoration: underline;
+}
+
+/* Action buttons */
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 }
 
-/* Mobile: hide buttons by default */
-@media screen and (max-width: 768px) {
-  .action-buttons {
-    display: none;
-    flex-direction: column;
-    margin-top: 5px;
-  }
-
-  .action-buttons.mobile-visible {
-    display: flex;
-  }
-}
-
-/* Button styling */
+/* Buttons – base */
 button {
-  padding: 5px 12px;
+  padding: 7px 14px;
+  border-radius: 6px;
   border: none;
-  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
+/* Button variants */
 button.edit-btn {
-  background-color: #4caf50;
+  background: #22c55e;
   color: white;
+}
+
+button.edit-btn:hover {
+  background: #16a34a;
 }
 
 button.delete-btn {
-  background-color: #f44336;
+  background: #ef4444;
   color: white;
+}
+
+button.delete-btn:hover {
+  background: #dc2626;
 }
 
 button.save-btn {
-  background-color: #2196f3;
+  background: #3b82f6;
   color: white;
+}
+
+button.save-btn:hover {
+  background: #2563eb;
 }
 
 button.cancel-btn {
-  background-color: #9e9e9e;
+  background: #9ca3af;
   color: white;
 }
 
+button.cancel-btn:hover {
+  background: #6b7280;
+}
+
+/* Processing text */
 .processing-text {
-  margin-left: 10px;
-  font-size: 14px;
-  color: #555;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Mobile view */
+@media (max-width: 768px) {
+  .users-table thead {
+    display: none;
+  }
+
+  .users-table,
+  .users-table tbody,
+  .users-table tr,
+  .users-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .users-table tr {
+    background: #ffffff;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  }
+
+  .users-table td {
+    border: none;
+    padding: 8px 0;
+  }
+
+  .action-buttons {
+    margin-top: 10px;
+  }
 }

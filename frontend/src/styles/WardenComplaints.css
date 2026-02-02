@@ -69,6 +69,8 @@
 
     .complaint-card {
         padding: 15px;
+        margin-left: auto;
+        width: 100%;
     }
 
     .resolve-btn {

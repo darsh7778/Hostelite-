@@ -8,13 +8,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
 import Complaint from "./pages/Complaint";
-import MealRating from "./pages/MealRating";
+// import MealRating from "./pages/MealRating";
 import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
 import StudentPayment from "./pages/StudentPayment";
 import WardenMeals from "./pages/WardenMeals";
 import StudentMeals from "./pages/StudentMeals";
+import UnderConstruction from "./components/UnderConstruction";
 
 export default function App() {
   return (
@@ -48,7 +49,7 @@ export default function App() {
             path="/ratings"
             element={
               <ProtectedRoute role="student">
-                <MealRating />
+                {/* <MealRating /> */}
               </ProtectedRoute>
             }
           />
@@ -93,6 +94,7 @@ export default function App() {
         </Route>
         <Route path="/warden/meals" element={<WardenMeals />} />
         <Route path="/student/meals" element={<StudentMeals />} />
+        <Route path="/admin/under-construction" element={<UnderConstruction />} />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />

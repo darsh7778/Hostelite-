@@ -125,6 +125,7 @@ export default function LoginPage() {
         onServicesClick={() =>
           servicesRef.current?.scrollIntoView({ behavior: "smooth" })
         }
+        onContactClick={() => setShowGetStarted(true)}
       />
 
       {/* GET STARTED FORM MODAL */}
