@@ -13,16 +13,13 @@ import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
 import StudentPayment from "./pages/StudentPayment";
-<<<<<<< HEAD
 import WardenMeals from "./pages/WardenMeals";
 import StudentMeals from "./pages/StudentMeals";
 import UnderConstruction from "./components/UnderConstruction";
-=======
 import AdvancePayment from "./pages/AdvancePayment";
 import RazorpayPayment from "./pages/RazorpayPayment";
 import UpiPayment from "./pages/UpiPayment";
 import DebitCardPayment from "./pages/DebitCardPayment";
->>>>>>> 078c759212cc076dd29e654e22a3933624ff4de8
 
 export default function App() {
   return (
