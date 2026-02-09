@@ -8,7 +8,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
 import Complaint from "./pages/Complaint";
-// import MealRating from "./pages/MealRating";
 import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
@@ -53,7 +52,6 @@ export default function App() {
             path="/ratings"
             element={
               <ProtectedRoute role="student">
-                {/* <MealRating /> */}
               </ProtectedRoute>
             }
           />

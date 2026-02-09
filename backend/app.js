@@ -13,17 +13,12 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes")); // Admin users
-// other routes...
+app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/ratings", require("./routes/ratingRoutes"));
 app.use("/api/complaints", require("./routes/complaintRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/meals", require("./routes/mealRoutes"));
-
-
-
-
 
 // Test
 app.get("/", (req, res) => res.send("Hostelite Backend Running"));

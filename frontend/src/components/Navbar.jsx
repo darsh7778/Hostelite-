@@ -85,7 +85,7 @@ export default function Navbar() {
       </ul>
 
       {/* PROFILE ICON */}
-      <div className="profile-container">
+      <div className="profile-wrapper">
         <div className="profile-icon" onClick={() => setOpen(!open)}>
           {user?.name?.charAt(0).toUpperCase()}
         </div>
@@ -98,8 +98,8 @@ export default function Navbar() {
             <p>
               <strong>Email: </strong> {user?.email}
             </p>
-            <p className="role">
-              <strong>Role:</strong> {user?.role?.toUpperCase()}
+            <p className="profile-role">
+              <strong>Role:</strong> <span>{user?.role?.toUpperCase()}</span>
             </p>
             {(user?.role === "student" || user?.role === "warden") && (
               <p>

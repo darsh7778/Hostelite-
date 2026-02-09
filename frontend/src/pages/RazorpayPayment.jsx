@@ -3,22 +3,8 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/payment.css";
-// import "../styles/RazorpayPayment.css"; // Temporarily commented for debugging
-import { 
-    CreditCard, 
-    User, 
-    CheckCircle, 
-    AlertCircle, 
-    Loader2,
-    Clock,
-    Check,
-    X,
-    ArrowLeft,
-    Shield,
-    Zap,
-    IndianRupee,
-    Calendar
-} from "lucide-react";
+
+
 
 export default function RazorpayPayment() {
     const { user } = useAuth();

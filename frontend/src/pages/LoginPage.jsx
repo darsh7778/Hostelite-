@@ -501,9 +501,9 @@ export default function LoginPage() {
           <div className="testimonial-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "Hostelite has completely transformed how I manage my hostel
+                Hostelite has completely transformed how I manage my hostel
                 life. The payment system is so convenient and complaint
-                resolution is incredibly fast!"
+                resolution is incredibly fast!
               </div>
               <div className="testimonial-author">
                 <div className="author-avatar">👨‍🎓</div>
@@ -516,9 +516,9 @@ export default function LoginPage() {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "The meal feedback system is amazing! I can rate my meals
+                The meal feedback system is amazing! I can rate my meals
                 instantly and see improvements. Best hostel management app I've
-                ever used."
+                ever used.
               </div>
               <div className="testimonial-author">
                 <div className="author-avatar">👩‍🎓</div>
@@ -531,9 +531,9 @@ export default function LoginPage() {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "From payments to complaints, everything is just a tap away. The
+                From payments to complaints, everything is just a tap away. The
                 interface is intuitive and support team is always helpful.
-                Highly recommend!"
+                Highly recommend!
               </div>
               <div className="testimonial-author">
                 <div className="author-avatar">👨‍🎓</div>

@@ -1,6 +1,6 @@
 .navbar {
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #e6872f, #6028a4);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,7 +25,7 @@
 
 .logo:hover {
   transform: translateY(-2px);
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg,  #764ba2, #667eea);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -52,10 +52,6 @@
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
-
-/* .nav-links li a:hover {
-  text-decoration: underline;
-} */
 
 /* PROFILE ICON */
 .profile-wrapper {
@@ -147,7 +143,47 @@
 
 /* MOBILE */
 @media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+  }
+  
   .nav-links {
     display: none;
+  }
+  
+  .logo {
+    font-size: 20px;
+  }
+  
+  .profile-wrapper {
+    position: relative;
+  }
+  
+  .profile-dropdown {
+    right: -10px;
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 15px;
+    height: 50px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .profile-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .profile-dropdown {
+    top: 45px;
+    width: 180px;
+    padding: 12px;
   }
 }

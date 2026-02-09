@@ -26,7 +26,12 @@ export default function WardenComplaints() {
         (c) => c.status === "pending",
       );
 
-      setComplaints(pendingComplaints);
+      // Sort by date (most recent first) and take only 3
+      const recentComplaints = pendingComplaints
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 3);
+
+      setComplaints(recentComplaints);
       setLoading(false);
     } catch (error) {
       console.error("Update error:", error.response || error);
@@ -78,7 +83,6 @@ export default function WardenComplaints() {
               <p>
                 <b>Title:</b> {complaint.title}
               </p>
-              {/* FIXED: show description only */}
               <p>
                 <b>Complaint:</b> {complaint.description}
               </p>

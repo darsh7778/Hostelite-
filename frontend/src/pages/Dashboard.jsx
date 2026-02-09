@@ -219,7 +219,7 @@ export default function Dashboard() {
             <div className="recent-complaints">
               <h3>Recent Complaints</h3>
               <div className="complaint-list">
-                {complaints.slice(0, 5).map((complaint) => (
+                {complaints.slice(0, 3).map((complaint) => (
                   <div
                     key={complaint._id}
                     className={`complaint-item ${complaint.status}`}
@@ -273,8 +273,8 @@ export default function Dashboard() {
         {user?.role === "student" && (
           <>
             <DashboardCard
-              title="Complaint Status"
-              description="Track your hostel complaints"
+              title="Submit Complaint"
+              description="submit your hostel complaints"
               icon={<Wrench size={32} />}
               badge={`${complaints.filter((c) => c.status === "pending").length} Pending`}
               onClick={() => navigate("/complaints")}
