@@ -1,10 +1,12 @@
-// src/components/GetStartedForm.jsx
 import "../styles/GetStartedForm.css";
 
 export default function GetStartedForm() {
   return (
     <div className="getform-container">
       <h2>Get Started with Hostelite </h2>
+
+
+
       <p>Please fill the form. Our team will contact you shortly.</p>
 
       <form

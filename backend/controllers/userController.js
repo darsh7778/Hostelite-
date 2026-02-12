@@ -4,7 +4,7 @@ const User = require("../models/User");
 const getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
-      .populate("room", "roomNumber") // 👈 VERY IMPORTANT
+      .populate("room", "roomNumber") 
       .select("-password");
 
     res.status(200).json(user);

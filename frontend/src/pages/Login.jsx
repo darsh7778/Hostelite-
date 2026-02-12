@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
-import "../styles/Login.css"; 
+import "../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,12 +19,12 @@ export default function Login() {
   const emailInputRef = useRef(null);
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
       setRememberMe(true);
     }
-    
+
     if (emailInputRef.current) {
       emailInputRef.current.focus();
     }
@@ -61,13 +61,13 @@ export default function Login() {
 
       if (res.data.token && res.data.user) {
         if (rememberMe) {
-          localStorage.setItem('rememberedEmail', email);
+          localStorage.setItem("rememberedEmail", email);
         } else {
-          localStorage.removeItem('rememberedEmail');
+          localStorage.removeItem("rememberedEmail");
         }
 
         setShowSuccess(true);
-        
+
         setTimeout(() => {
           login(res.data.token, res.data.user);
           navigate("/dashboard");
@@ -76,14 +76,14 @@ export default function Login() {
         setError("Invalid response from server");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       if (error.response?.status === 401) {
         setError("Invalid email or password");
       } else if (error.response?.status === 429) {
         setError("Too many login attempts. Please try again later");
       } else if (error.response?.data?.message) {
         setError(error.response.data.message);
-      } else if (error.code === 'NETWORK_ERROR') {
+      } else if (error.code === "NETWORK_ERROR") {
         setError("Network error. Please check your connection");
       } else {
         setError("Login failed. Please try again.");
@@ -97,10 +97,10 @@ export default function Login() {
     if (error) {
       setError("");
     }
-    
-    if (field === 'email') {
+
+    if (field === "email") {
       setEmail(value);
-    } else if (field === 'password') {
+    } else if (field === "password") {
       setPassword(value);
     }
   };
@@ -144,15 +144,17 @@ export default function Login() {
 
         <form onSubmit={loginHandler} className="auth-form">
           <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'email' ? 'focused' : ''}`}>
+            <div
+              className={`input-wrapper ${isFocused === "email" ? "focused" : ""}`}
+            >
               {/* <span className="input-icon"></span> */}
               <input
                 ref={emailInputRef}
                 type="email"
                 placeholder="Enter your E-mail"
                 value={email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                onFocus={() => handleInputFocus('email')}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                onFocus={() => handleInputFocus("email")}
                 onBlur={handleInputBlur}
                 required
                 className="auth-input"
@@ -162,14 +164,16 @@ export default function Login() {
           </div>
 
           <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'password' ? 'focused' : ''}`}>
+            <div
+              className={`input-wrapper ${isFocused === "password" ? "focused" : ""}`}
+            >
               {/* <span className="input-icon"></span> */}
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-                onFocus={() => handleInputFocus('password')}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                onFocus={() => handleInputFocus("password")}
                 onBlur={handleInputBlur}
                 required
                 className="auth-input"
@@ -210,7 +214,7 @@ export default function Login() {
             )}
           </button>
         </form>
-
+        <p className="forgot-password" onClick={() => navigate("/forgot-password")}>Forgot Password?</p>
         <p className="auth-footer">
           Don't have an account? <Link to="/register">Sign up</Link>
         </p>

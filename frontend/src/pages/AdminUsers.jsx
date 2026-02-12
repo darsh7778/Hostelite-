@@ -24,7 +24,7 @@ export default function AdminUsers() {
     fetchRooms();
   }, []);
 
-  // ================= FETCH USERS =================
+  // Fetch Users
   const fetchUsers = async () => {
     try {
       const res = await API.get("/users");
@@ -34,7 +34,7 @@ export default function AdminUsers() {
     }
   };
 
-  // ================= FETCH ROOMS =================
+  //  FETCH ROOMS 
   const fetchRooms = async () => {
     try {
       const res = await API.get("/rooms");
@@ -46,14 +46,14 @@ export default function AdminUsers() {
     }
   };
 
-  // ================= FILTER USERS =================
+  //  FILTER USERS 
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ================= START EDIT =================
+  //  START EDIT 
   const startEdit = (user) => {
     setEditingUser(user._id);
     setFormData({
@@ -64,7 +64,7 @@ export default function AdminUsers() {
     });
   };
 
-  // ================= CANCEL EDIT =================
+  //  CANCEL EDIT 
   const cancelEdit = () => {
     setEditingUser(null);
     setFormData({
@@ -75,7 +75,7 @@ export default function AdminUsers() {
     });
   };
 
-  // ================= SAVE EDIT =================
+  //  SAVE EDIT
   const submitEdit = async (id) => {
     try {
       setProcessingUser(id);
@@ -93,7 +93,7 @@ export default function AdminUsers() {
     }
   };
 
-  // ================= DELETE USER =================
+  //  DELETE USER 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
 

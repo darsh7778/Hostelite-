@@ -21,7 +21,7 @@ app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/rooms", require("./routes/room.routes"));
 app.use("/api/system-settings", require("./routes/systemSettings.routes"));
-// app.use("/api/meals", require("./routes/mealRoutes"));
+app.use("/api/meals", require("./routes/mealRoutes"));
 
 
 

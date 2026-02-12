@@ -8,7 +8,6 @@ import {
   UserCheck,
   Shield,
   TrendingUp,
-  Search,
   Settings,
   FileText,
   CreditCard,
@@ -25,7 +24,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // -------------------- ALL HOOKS AT THE TOP --------------------
+  //  ALL HOOKS AT THE TOP 
   const [stats, setStats] = useState({
     students: 0,
     wardens: 0,
@@ -36,7 +35,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [complaints, setComplaints] = useState([]);
 
-  // -------------------- FETCH DATA BASED ON ROLE --------------------
+  // FETCH DATA BASED ON ROLE 
   useEffect(() => {
     if (!user) return;
 
@@ -47,7 +46,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // -------------------- FETCH FUNCTIONS --------------------
+  // -FETCH FUNCTIONS
   const fetchStats = async () => {
     try {
       const res = await API.get("/users");
@@ -77,7 +76,7 @@ export default function Dashboard() {
     }
   };
 
-  // -------------------- SEARCH --------------------
+  //  SEARCH 
   const handleSearch = () => {
     if (!search.trim()) return;
     navigate(`/admin/users?search=${search}`);
@@ -96,7 +95,7 @@ export default function Dashboard() {
     }).length;
   };
 
-  // -------------------- RENDER --------------------
+  //  RENDER 
   return (
     <div className="dashboard-container">
       {/* MODERN HEADER */}
@@ -199,7 +198,7 @@ export default function Dashboard() {
             <div className="recent-complaints">
               <h3>Recent Complaints</h3>
               <div className="complaint-list">
-                {complaints.slice(0, 5).map((complaint) => (
+                {complaints.slice(0, 2).map((complaint) => (
                   <div
                     key={complaint._id}
                     className={`complaint-item ${complaint.status}`}
@@ -327,7 +326,7 @@ export default function Dashboard() {
   );
 }
 
-// -------------------- COMPONENTS --------------------
+//  COMPONENTS 
 function DashboardCard({ title, description, onClick, icon, badge }) {
   return (
     <div className="dashboard-card" onClick={onClick}>

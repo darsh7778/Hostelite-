@@ -10,7 +10,7 @@ const createRooms = async (req, res) => {
       return res.status(400).json({ message: "Invalid number of rooms" });
     }
 
-    // 🔥 Check if rooms already exist
+    // Check if rooms already exist
     const existingRooms = await Room.countDocuments();
 
     if (existingRooms > 0) {
@@ -119,7 +119,6 @@ const unassignRoom = async (req, res) => {
   }
 };
 
-// 🔥 IMPORTANT EXPORT
 module.exports = {
   createRooms,
   getAllRooms,

@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
       default: "student",
     },
 
-    // ================= HOSTEL =================
+    // HOSTEL
     room: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
@@ -39,10 +39,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Hostelite",
     },
+    otp: {
+      type: String,
+    },
+    otpExpires: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("User", userSchema);

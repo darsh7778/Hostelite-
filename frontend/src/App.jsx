@@ -17,6 +17,7 @@ import WardenMeals from "./pages/WardenMeals";
 import StudentMeals from "./pages/StudentMeals";
 import UnderConstruction from "./components/UnderConstruction";
 import SystemSettings from "./pages/SystemSettings";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export default function App() {
   return (
@@ -95,8 +96,13 @@ export default function App() {
         </Route>
         <Route path="/warden/meals" element={<WardenMeals />} />
         <Route path="/student/meals" element={<StudentMeals />} />
-        <Route path="/admin/under-construction" element={<UnderConstruction />} />
+        <Route
+          path="/admin/under-construction"
+          element={<UnderConstruction />}
+        />
         <Route path="/admin/system-settings" element={<SystemSettings />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />

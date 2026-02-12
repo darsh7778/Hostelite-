@@ -39,7 +39,7 @@ const SystemSettings = () => {
       setMessage(res.data.message);
       setTotalRooms("");
 
-      // 🔥 Refresh rooms after creation
+      //  Refresh rooms after creation
       await fetchRooms();
     } catch (error) {
       console.error(error);

@@ -5,7 +5,7 @@ const {
   updateUser,
   deleteUser,
   getUserByIdWithProfile,
-} = require("../controllers/userController"); // ✅ correct import
+} = require("../controllers/userController"); 
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 
@@ -15,7 +15,6 @@ console.log("roleMiddleware(['admin']):", roleMiddleware(["admin"]));
 
 const router = express.Router();
 
-// -------------------- ROUTES --------------------
 
 // Get logged-in user's profile
 router.get("/me", authMiddleware, getMyProfile);

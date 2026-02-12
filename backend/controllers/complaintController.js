@@ -1,9 +1,7 @@
 const Complaint = require("../models/Complaint");
 const User = require("../models/User");
 
-// ==============================
 // STUDENT: Submit Complaint
-// ==============================
 exports.submitComplaint = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -43,9 +41,7 @@ exports.submitComplaint = async (req, res) => {
   }
 };
 
-// ==============================
 // GET Complaints (Role Based)
-// ==============================
 exports.getComplaints = async (req, res) => {
   try {
     const user = req.user;
@@ -79,9 +75,7 @@ exports.getComplaints = async (req, res) => {
   }
 };
 
-// ==============================
 // WARDEN / ADMIN: Update Status
-// ==============================
 exports.updateComplaintStatus = async (req, res) => {
   try {
     const { status } = req.body;
