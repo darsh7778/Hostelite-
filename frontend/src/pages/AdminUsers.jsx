@@ -12,7 +12,7 @@ export default function AdminUsers() {
     name: "",
     email: "",
     role: "student",
-    room: "", // store room ObjectId
+    room: "",
   });
   const [processingUser, setProcessingUser] = useState(null);
   const [search, setSearch] = useState("");
@@ -24,7 +24,6 @@ export default function AdminUsers() {
     fetchRooms();
   }, []);
 
-  // Fetch Users
   const fetchUsers = async () => {
     try {
       const res = await API.get("/users");
@@ -34,7 +33,6 @@ export default function AdminUsers() {
     }
   };
 
-  //  FETCH ROOMS 
   const fetchRooms = async () => {
     try {
       const res = await API.get("/rooms");
@@ -46,14 +44,24 @@ export default function AdminUsers() {
     }
   };
 
-  //  FILTER USERS 
+  // OPEN PROFILE USING PROFILE ID
+  const openProfile = async (userId) => {
+    try {
+      const res = await API.get(`/profile/user/${userId}`);
+      const profileId = res.data._id;
+
+      navigate(`/admin/student/${profileId}`);
+    } catch (err) {
+      alert("Profile not updated yet");
+    }
+  };
+
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  //  START EDIT 
   const startEdit = (user) => {
     setEditingUser(user._id);
     setFormData({
@@ -64,7 +72,6 @@ export default function AdminUsers() {
     });
   };
 
-  //  CANCEL EDIT 
   const cancelEdit = () => {
     setEditingUser(null);
     setFormData({
@@ -75,7 +82,6 @@ export default function AdminUsers() {
     });
   };
 
-  //  SAVE EDIT
   const submitEdit = async (id) => {
     try {
       setProcessingUser(id);
@@ -93,7 +99,6 @@ export default function AdminUsers() {
     }
   };
 
-  //  DELETE USER 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
 
@@ -137,7 +142,6 @@ export default function AdminUsers() {
           <tbody>
             {filteredUsers.map((user) => (
               <tr key={user._id}>
-                {/* NAME */}
                 <td>
                   {editingUser === user._id ? (
                     <input
@@ -149,14 +153,14 @@ export default function AdminUsers() {
                   ) : (
                     <span
                       className="user-name"
-                      onClick={() => navigate(`/admin/users/${user._id}`)}
+                      style={{ cursor: "pointer", color: "blue" }}
+                      onClick={() => openProfile(user._id)}
                     >
                       {user.name}
                     </span>
                   )}
                 </td>
 
-                {/* EMAIL */}
                 <td>
                   {editingUser === user._id ? (
                     <input
@@ -170,10 +174,8 @@ export default function AdminUsers() {
                   )}
                 </td>
 
-                {/* ROLE */}
                 <td>{user.role}</td>
 
-                {/* ROOM ASSIGNMENT */}
                 <td>
                   {editingUser === user._id &&
                   user.role === "student" ? (
@@ -206,7 +208,6 @@ export default function AdminUsers() {
                   )}
                 </td>
 
-                {/* ACTIONS */}
                 <td>
                   {user.role !== "admin" ? (
                     editingUser === user._id ? (

@@ -24,7 +24,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  //  ALL HOOKS AT THE TOP 
+  //  ALL HOOKS AT THE TOP
   const [stats, setStats] = useState({
     students: 0,
     wardens: 0,
@@ -34,8 +34,40 @@ export default function Dashboard() {
   });
   const [search, setSearch] = useState("");
   const [complaints, setComplaints] = useState([]);
+  const [profileStatus, setProfileStatus] = useState({
+    loading: true,
+    submitted: false,
+  });
 
-  // FETCH DATA BASED ON ROLE 
+  // Fetch Profile Status (Student Only)
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.role === "admin") {
+      fetchStats();
+    } else if (user.role === "warden") {
+      fetchComplaints();
+    } else if (user.role === "student") {
+      fetchProfileStatus();
+    }
+  }, [user]);
+
+  const fetchProfileStatus = async () => {
+    try {
+      const res = await API.get("/profile/me");
+      setProfileStatus({
+        loading: false,
+        submitted: res.data?.submitted || false,
+      });
+    } catch (err) {
+      setProfileStatus({
+        loading: false,
+        submitted: false,
+      });
+    }
+  };
+
+  // FETCH DATA BASED ON ROLE
   useEffect(() => {
     if (!user) return;
 
@@ -76,7 +108,7 @@ export default function Dashboard() {
     }
   };
 
-  //  SEARCH 
+  //  SEARCH
   const handleSearch = () => {
     if (!search.trim()) return;
     navigate(`/admin/users?search=${search}`);
@@ -95,7 +127,7 @@ export default function Dashboard() {
     }).length;
   };
 
-  //  RENDER 
+  //  RENDER
   return (
     <div className="dashboard-container">
       {/* MODERN HEADER */}
@@ -252,6 +284,22 @@ export default function Dashboard() {
         {user?.role === "student" && (
           <>
             <DashboardCard
+              title={
+                profileStatus.submitted
+                  ? "Profile Submitted"
+                  : "Complete Your Profile"
+              }
+              description={
+                profileStatus.submitted
+                  ? "View your submitted personal details"
+                  : "Submit your personal details (One-time only)"
+              }
+              icon={<UserCheck size={32} />}
+              badge={profileStatus.submitted ? "Completed" : "Required"}
+              onClick={() => navigate("/student/profile")}
+            />
+
+            <DashboardCard
               title="Complaint Status"
               description="Track your hostel complaints"
               icon={<Wrench size={32} />}
@@ -326,7 +374,7 @@ export default function Dashboard() {
   );
 }
 
-//  COMPONENTS 
+//  COMPONENTS
 function DashboardCard({ title, description, onClick, icon, badge }) {
   return (
     <div className="dashboard-card" onClick={onClick}>

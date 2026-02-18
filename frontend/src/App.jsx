@@ -18,6 +18,8 @@ import StudentMeals from "./pages/StudentMeals";
 import UnderConstruction from "./components/UnderConstruction";
 import SystemSettings from "./pages/SystemSettings";
 import ForgotPassword from "./pages/ForgotPassword";
+import StudentProfile from "./pages/StudentProfile";
+import AdminStudentProfile from "./pages/AdminStudentProfile";
 
 export default function App() {
   return (
@@ -103,6 +105,15 @@ export default function App() {
         <Route path="/admin/system-settings" element={<SystemSettings />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route
+          path="/admin/student/:id"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminStudentProfile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />
