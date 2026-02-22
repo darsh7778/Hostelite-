@@ -17,8 +17,4 @@ export default function UpiPayment() {
             </div>
         </div>
     );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> teammate/main

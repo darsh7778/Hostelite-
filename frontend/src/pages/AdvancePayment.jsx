@@ -729,8 +729,4 @@ export default function AdvancePayment() {
             </div>
         </div>
     );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> teammate/main

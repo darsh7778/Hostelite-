@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/payment.css";
-<<<<<<< HEAD
-
-
-=======
 // import "../styles/RazorpayPayment.css"; // Temporarily commented for debugging
 import { 
     CreditCard, 
@@ -23,7 +19,6 @@ import {
     IndianRupee,
     Calendar
 } from "lucide-react";
->>>>>>> teammate/main
 
 export default function RazorpayPayment() {
     const { user } = useAuth();
@@ -184,8 +179,4 @@ export default function RazorpayPayment() {
             </div>
         </div>
     );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> teammate/main

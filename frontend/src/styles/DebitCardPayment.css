@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 /* Debit Card Payment Page Styles */
 
-=======
->>>>>>> teammate/main
 .card-details-section {
     margin: 2rem 0;
     padding: 2rem;
@@ -156,8 +153,4 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> teammate/main
