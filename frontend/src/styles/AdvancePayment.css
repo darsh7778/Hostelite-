@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* Advance Payment System Styles */
 
+=======
+>>>>>>> teammate/main
 .advance-payment-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -864,4 +867,8 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> teammate/main

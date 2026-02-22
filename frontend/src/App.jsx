@@ -132,7 +132,22 @@ export default function App() {
         </Route>
         <Route path="/warden/meals" element={<WardenMeals />} />
         <Route path="/student/meals" element={<StudentMeals />} />
-        <Route path="/admin/under-construction" element={<UnderConstruction />} />
+        <Route
+          path="/admin/under-construction"
+          element={<UnderConstruction />}
+        />
+        <Route path="/admin/system-settings" element={<SystemSettings />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route
+          path="/admin/student/:id"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminStudentProfile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />

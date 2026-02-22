@@ -4,7 +4,7 @@ const {
   getComplaints,
   updateComplaintStatus,
 } = require("../controllers/complaintController");
-const authMiddleware = require("../middleware/authMiddleware");
+const {authMiddleware} = require("../middleware/authMiddleware");
 
 const router = express.Router();
 

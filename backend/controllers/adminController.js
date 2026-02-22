@@ -3,7 +3,6 @@ const MealRating = require("../models/MealRating");
 const Payment = require("../models/Payment");
 const User = require("../models/User");
 
-// ------------------- COMPLAINTS 
 
 // Approve or reject a complaint
 exports.updateComplaintStatus = async (req, res) => {
@@ -33,7 +32,6 @@ exports.getAllComplaints = async (req, res) => {
   }
 };
 
-// ------------------- MEAL RATINGS 
 
 // Get all meal ratings
 exports.getAllRatings = async (req, res) => {
@@ -58,7 +56,6 @@ exports.deleteRating = async (req, res) => {
   }
 };
 
-// ------------------- PAYMENTS 
 
 // Get all payments
 exports.getAllPayments = async (req, res) => {
@@ -88,7 +85,6 @@ exports.updatePaymentStatus = async (req, res) => {
   }
 };
 
-// ------------------- STUDENTS 
 
 // Get all students
 exports.getAllStudents = async (req, res) => {

@@ -17,4 +17,8 @@ export default function DebitCardPayment() {
             </div>
         </div>
     );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> teammate/main

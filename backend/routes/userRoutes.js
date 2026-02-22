@@ -5,17 +5,16 @@ const {
   updateUser,
   deleteUser,
   getUserByIdWithProfile,
-} = require("../controllers/userController"); // ✅ correct import
-const authMiddleware = require("../middleware/authMiddleware");
+} = require("../controllers/userController"); 
+const { authMiddleware } = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 
-console.log("authMiddleware:", authMiddleware);
-console.log("roleMiddleware:", roleMiddleware);
-console.log("roleMiddleware(['admin']):", roleMiddleware(["admin"]));
+// console.log("authMiddleware:", authMiddleware);
+// console.log("roleMiddleware:", roleMiddleware);
+// console.log("roleMiddleware(['admin']):", roleMiddleware(["admin"]));
 
 const router = express.Router();
 
-// -------------------- ROUTES --------------------
 
 // Get logged-in user's profile
 router.get("/me", authMiddleware, getMyProfile);

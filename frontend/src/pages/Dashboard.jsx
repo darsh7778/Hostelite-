@@ -8,7 +8,6 @@ import {
   UserCheck,
   Shield,
   TrendingUp,
-  Search,
   Settings,
   FileText,
   CreditCard,
@@ -25,7 +24,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // -------------------- ALL HOOKS AT THE TOP --------------------
+  //  ALL HOOKS AT THE TOP
   const [stats, setStats] = useState({
     students: 0,
     wardens: 0,
@@ -35,8 +34,40 @@ export default function Dashboard() {
   });
   const [search, setSearch] = useState("");
   const [complaints, setComplaints] = useState([]);
+  const [profileStatus, setProfileStatus] = useState({
+    loading: true,
+    submitted: false,
+  });
 
-  // -------------------- FETCH DATA BASED ON ROLE --------------------
+  // Fetch Profile Status (Student Only)
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.role === "admin") {
+      fetchStats();
+    } else if (user.role === "warden") {
+      fetchComplaints();
+    } else if (user.role === "student") {
+      fetchProfileStatus();
+    }
+  }, [user]);
+
+  const fetchProfileStatus = async () => {
+    try {
+      const res = await API.get("/profile/me");
+      setProfileStatus({
+        loading: false,
+        submitted: res.data?.submitted || false,
+      });
+    } catch (err) {
+      setProfileStatus({
+        loading: false,
+        submitted: false,
+      });
+    }
+  };
+
+  // FETCH DATA BASED ON ROLE
   useEffect(() => {
     if (!user) return;
 
@@ -47,7 +78,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // -------------------- FETCH FUNCTIONS --------------------
+  // -FETCH FUNCTIONS
   const fetchStats = async () => {
     try {
       const res = await API.get("/users");
@@ -77,7 +108,7 @@ export default function Dashboard() {
     }
   };
 
-  // -------------------- SEARCH --------------------
+  //  SEARCH
   const handleSearch = () => {
     if (!search.trim()) return;
     navigate(`/admin/users?search=${search}`);
@@ -96,7 +127,7 @@ export default function Dashboard() {
     }).length;
   };
 
-  // -------------------- RENDER --------------------
+  //  RENDER
   return (
     <div className="dashboard-container">
       {/* MODERN HEADER */}
@@ -112,26 +143,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-      {/* SEARCH BAR - ADMIN ONLY */}
-      {user?.role === "admin" && (
-        <div className="search-section">
-          <div className="search-container">
-            <Search size={20} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Quick user lookup..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="search-input"
-            />
-            <button onClick={handleSearch} className="search-btn">
-              Search
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ADMIN STATS */}
       {user?.role === "admin" && (
@@ -219,7 +230,7 @@ export default function Dashboard() {
             <div className="recent-complaints">
               <h3>Recent Complaints</h3>
               <div className="complaint-list">
-                {complaints.slice(0, 3).map((complaint) => (
+{complaints.slice(0, 3).map((complaint) => (
                   <div
                     key={complaint._id}
                     className={`complaint-item ${complaint.status}`}
@@ -273,8 +284,24 @@ export default function Dashboard() {
         {user?.role === "student" && (
           <>
             <DashboardCard
-              title="Submit Complaint"
-              description="submit your hostel complaints"
+              title={
+                profileStatus.submitted
+                  ? "Profile Submitted"
+                  : "Complete Your Profile"
+              }
+              description={
+                profileStatus.submitted
+                  ? "View your submitted personal details"
+                  : "Submit your personal details (One-time only)"
+              }
+              icon={<UserCheck size={32} />}
+              badge={profileStatus.submitted ? "Completed" : "Required"}
+              onClick={() => navigate("/student/profile")}
+            />
+
+            <DashboardCard
+              title="Complaint Status"
+              description="Track your hostel complaints"
               icon={<Wrench size={32} />}
               badge={`${complaints.filter((c) => c.status === "pending").length} Pending`}
               onClick={() => navigate("/complaints")}
@@ -338,7 +365,7 @@ export default function Dashboard() {
               title="System Settings"
               description="Configure system preferences"
               icon={<Settings size={32} />}
-              onClick={() => navigate("/admin/under-construction")}
+              onClick={() => navigate("/admin/system-settings")}
             />
           </>
         )}
@@ -347,7 +374,7 @@ export default function Dashboard() {
   );
 }
 
-// -------------------- COMPONENTS --------------------
+//  COMPONENTS
 function DashboardCard({ title, description, onClick, icon, badge }) {
   return (
     <div className="dashboard-card" onClick={onClick}>

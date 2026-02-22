@@ -101,11 +101,13 @@ export default function Navbar() {
             <p className="profile-role">
               <strong>Role:</strong> <span>{user?.role?.toUpperCase()}</span>
             </p>
-            {(user?.role === "student" || user?.role === "warden") && (
+            {user?.role === "student" && (
               <p>
-                <strong>Room No:</strong> {user?.roomNumber || "Not Assigned"}
+                <strong>Room No:</strong>{" "}
+                {user?.room?.roomNumber || "Not Assigned"}
               </p>
             )}
+
             <hr />
             <button onClick={logout}>Logout</button>
           </div>

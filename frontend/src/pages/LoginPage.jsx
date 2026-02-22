@@ -4,6 +4,9 @@ import Modal from "../components/Modal";
 import Login from "./Login";
 import "../styles/LoginPage.css";
 import GetStartedForm from "../pages/GetStartedForm.jsx";
+import mailicon from "../assets/mail-icon.svg";
+import messageIcon from "../assets/message-icon.svg";
+import phoneicon from "../assets/phone-icon.svg"; 
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(false);
@@ -584,9 +587,9 @@ export default function LoginPage() {
           <div className="footer-bottom">
             <p>© 2024 Hostelite. All rights reserved.</p>
             <div className="footer-social">
-              <span>📧</span>
-              <span>💬</span>
-              <span>📱</span>
+              <span><img src={mailicon} alt="Mail" /></span>
+              <span><img src={messageIcon} alt="msg" /></span>
+              <span><img src={phoneicon} alt="phone" /></span>
             </div>
           </div>
         </div>
