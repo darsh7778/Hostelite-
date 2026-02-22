@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const { uploadToImageKit } = require("../utils/uploadToImageKit");
 
 /* ===========================
    STUDENT SUBMIT PROFILE
@@ -15,7 +16,37 @@ exports.submitProfile = async (req, res) => {
       });
     }
 
-    if (!req.files?.aadhaarPhoto || !req.files?.profilePhoto) {
+    // Check if we have ImageKit URLs from frontend or files for server-side upload
+    let profilePhotoUrl, aadhaarPhotoUrl;
+
+    if (req.body.profilePhotoUrl && req.body.aadhaarPhotoUrl) {
+      // Frontend uploaded to ImageKit directly
+      profilePhotoUrl = req.body.profilePhotoUrl;
+      aadhaarPhotoUrl = req.body.aadhaarPhotoUrl;
+    } else if (req.files?.aadhaarPhoto && req.files?.profilePhoto) {
+      // Server-side upload to ImageKit
+      const profilePhotoUpload = await uploadToImageKit(
+        req.files.profilePhoto[0],
+        "profile-photos",
+        `profile-${userId}-${Date.now()}`
+      );
+
+      const aadhaarPhotoUpload = await uploadToImageKit(
+        req.files.aadhaarPhoto[0],
+        "aadhaar-cards",
+        `aadhaar-${userId}-${Date.now()}`
+      );
+
+      if (!profilePhotoUpload.success || !aadhaarPhotoUpload.success) {
+        return res.status(500).json({
+          message: "Failed to upload images to ImageKit",
+          error: profilePhotoUpload.error || aadhaarPhotoUpload.error,
+        });
+      }
+
+      profilePhotoUrl = profilePhotoUpload.url;
+      aadhaarPhotoUrl = aadhaarPhotoUpload.url;
+    } else {
       return res.status(400).json({
         message: "All documents required",
       });
@@ -25,8 +56,8 @@ exports.submitProfile = async (req, res) => {
       user: userId,
       role: req.user.role,
       ...req.body,
-      aadhaarPhoto: req.files.aadhaarPhoto[0].path,
-      profilePhoto: req.files.profilePhoto[0].path,
+      aadhaarPhoto: aadhaarPhotoUrl,
+      profilePhoto: profilePhotoUrl,
       submitted: true,
     };
 

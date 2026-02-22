@@ -264,7 +264,7 @@ export default function AdvancePayment() {
             const { order, paymentId } = response.data;
 
             const options = {
-                key: process.env.REACT_APP_RAZORPAY_KEY_ID || "rzp_test_YourKeyHere",
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_YourKeyHere",
                 amount: order.amount,
                 currency: order.currency,
                 name: "Hostelite",

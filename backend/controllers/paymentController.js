@@ -2,11 +2,6 @@ const Payment = require("../models/Payment");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
 // Create Razorpay Order
 exports.createOrder = async (req, res) => {
   try {
@@ -15,6 +10,12 @@ exports.createOrder = async (req, res) => {
     if (!amount || !studentId || !studentName) {
       return res.status(400).json({ message: "Amount, student ID and name are required" });
     }
+
+    // Initialize Razorpay with environment variables
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
 
     const options = {
       amount: amount * 100, // Convert to paise

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import ImageUploadSimple from "../components/ImageUploadSimple";
+import "../styles/StudentProfile.css";
 
 export default function StudentProfile() {
   const navigate = useNavigate();
@@ -20,10 +22,8 @@ export default function StudentProfile() {
 
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [aadhaarPhoto, setAadhaarPhoto] = useState(null);
-
-  useEffect(() => {
-    checkProfile();
-  }, []);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState("");
+  const [aadhaarPhotoUrl, setAadhaarPhotoUrl] = useState("");
 
   const checkProfile = async () => {
     try {
@@ -31,12 +31,23 @@ export default function StudentProfile() {
       if (res.data?.submitted) {
         setSubmitted(true);
         setFormData(res.data);
+        // Set profile photo URL if it exists in the response
+        if (res.data.profilePhotoUrl) {
+          setProfilePhotoUrl(res.data.profilePhotoUrl);
+        }
+        if (res.data.aadhaarPhotoUrl) {
+          setAadhaarPhotoUrl(res.data.aadhaarPhotoUrl);
+        }
       }
     } catch (err) {
       console.log("No profile yet");
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    checkProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -97,8 +108,13 @@ export default function StudentProfile() {
       data.append(key, formData[key]);
     });
 
-    data.append("profilePhoto", profilePhoto);
-    data.append("aadhaarPhoto", aadhaarPhoto);
+    // Add ImageKit URLs instead of files
+    if (profilePhotoUrl) {
+      data.append("profilePhotoUrl", profilePhotoUrl);
+    }
+    if (aadhaarPhotoUrl) {
+      data.append("aadhaarPhotoUrl", aadhaarPhotoUrl);
+    }
 
     try {
       await API.post("/profile/submit", data, {
@@ -114,73 +130,233 @@ export default function StudentProfile() {
     }
   };
 
-  if (loading) return <h3>Loading...</h3>;
+  if (loading) return (
+    <div className="profile-container">
+      <div className="profile-card">
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <div className="loading-spinner" style={{ margin: '0 auto 16px' }}></div>
+          <p style={{ color: '#64748b', fontSize: '16px' }}>Loading profile...</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="profile-container">
-      
-      <button
-        onClick={() => navigate("/dashboard")}>
-        ← Back to Dashboard
-      </button>
+      <div className="profile-card">
+        <button className="back-btn" onClick={() => navigate("/dashboard")}>
+          ← Back to Dashboard
+        </button>
 
-      <h2>Student Personal Profile</h2>
-
-      {submitted ? (
-        <div className="profile-view">
-          <p><strong>Full Name:</strong> {formData.fullName}</p>
-          <p><strong>Father Name:</strong> {formData.fatherName}</p>
-          <p><strong>Mother Name:</strong> {formData.motherName}</p>
-          <p><strong>Phone:</strong> {formData.phone}</p>
-          <p><strong>Address:</strong> {formData.address}</p>
-          <p><strong>Aadhaar:</strong> {formData.aadhaarNumber}</p>
+        <div className="profile-header">
+          <h1 className="profile-title">Student Personal Profile</h1>
+          <p className="profile-subtitle">
+            {submitted ? "Your submitted profile information" : "Complete your profile information"}
+          </p>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="profile-form">
 
-          <input name="fullName" placeholder="Full Name" onChange={handleChange} />
-          <p className="error">{errors.fullName}</p>
+        {submitted ? (
+          <div className="profile-view">
+            <div className="profile-view-header">
+              <div className="avatar-section">
+                <div className="avatar-container">
+                  <div className="avatar-placeholder" style={{ display: profilePhotoUrl ? 'none' : 'flex' }}>
+                    <span>👤</span>
+                  </div>
+                  <div className="status-badge">
+                    <span className="status-dot"></span>
+                    Verified
+                  </div>
+                </div>
+              </div>
+              <div className="profile-summary">
+                <h2 className="profile-name">{formData.fullName}</h2>
+                <p className="profile-status">Profile Complete & Verified</p>
+              </div>
+            </div>
 
-          <input name="fatherName" placeholder="Father Name" onChange={handleChange} />
-          <p className="error">{errors.fatherName}</p>
+            <div className="profile-info-grid">
+              <div className="info-item">
+                <div className="info-icon">👤</div>
+                <div className="info-content">
+                  <div className="info-label">Full Name</div>
+                  <div className="info-value">{formData.fullName}</div>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon">👨</div>
+                <div className="info-content">
+                  <div className="info-label">Father Name</div>
+                  <div className="info-value">{formData.fatherName}</div>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon">👩</div>
+                <div className="info-content">
+                  <div className="info-label">Mother Name</div>
+                  <div className="info-value">{formData.motherName}</div>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon">📱</div>
+                <div className="info-content">
+                  <div className="info-label">Phone Number</div>
+                  <div className="info-value">{formData.phone}</div>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon">📍</div>
+                <div className="info-content">
+                  <div className="info-label">Address</div>
+                  <div className="info-value">{formData.address}</div>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon">🆔</div>
+                <div className="info-content">
+                  <div className="info-label">Aadhaar Number</div>
+                  <div className="info-value">{formData.aadhaarNumber}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="btn-group">
+              <button className="btn btn-secondary" onClick={() => navigate("/dashboard")}>
+                ← Back to Dashboard
+              </button>
+              <button className="btn btn-primary">
+                Edit Profile
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="profile-form">
+            <div className="form-row">
+              <div className="input-group">
+                <label className="input-label">Full Name</label>
+                <input 
+                  name="fullName" 
+                  className="profile-input"
+                  placeholder="Enter your full name" 
+                  value={formData.fullName}
+                  onChange={handleChange} 
+                />
+                {errors.fullName && <p className="error">{errors.fullName}</p>}
+              </div>
+              <div className="input-group">
+                <label className="input-label">Father Name</label>
+                <input 
+                  name="fatherName" 
+                  className="profile-input"
+                  placeholder="Enter father's name" 
+                  value={formData.fatherName}
+                  onChange={handleChange} 
+                />
+                {errors.fatherName && <p className="error">{errors.fatherName}</p>}
+              </div>
+            </div>
 
-          <input name="motherName" placeholder="Mother Name" onChange={handleChange} />
-          <p className="error">{errors.motherName}</p>
+            <div className="form-row">
+              <div className="input-group">
+                <label className="input-label">Mother Name</label>
+                <input 
+                  name="motherName" 
+                  className="profile-input"
+                  placeholder="Enter mother's name" 
+                  value={formData.motherName}
+                  onChange={handleChange} 
+                />
+                {errors.motherName && <p className="error">{errors.motherName}</p>}
+              </div>
+              <div className="input-group">
+                <label className="input-label">Phone Number</label>
+                <input 
+                  name="phone" 
+                  className="profile-input"
+                  placeholder="10-digit phone number" 
+                  value={formData.phone}
+                  onChange={handleChange} 
+                />
+                {errors.phone && <p className="error">{errors.phone}</p>}
+              </div>
+            </div>
 
-          <input name="phone" placeholder="Phone" onChange={handleChange} />
-          <p className="error">{errors.phone}</p>
+            <div className="form-row single">
+              <div className="input-group">
+                <label className="input-label">Permanent Address</label>
+                <input 
+                  name="address" 
+                  className="profile-input"
+                  placeholder="Enter your permanent address" 
+                  value={formData.address}
+                  onChange={handleChange} 
+                />
+                {errors.address && <p className="error">{errors.address}</p>}
+              </div>
+            </div>
 
-          <input name="address" placeholder="Permanent Address" onChange={handleChange} />
-          <p className="error">{errors.address}</p>
+            <div className="form-row single">
+              <div className="input-group">
+                <label className="input-label">Aadhaar Number</label>
+                <input 
+                  name="aadhaarNumber" 
+                  className="profile-input"
+                  placeholder="12-digit Aadhaar number" 
+                  value={formData.aadhaarNumber}
+                  onChange={handleChange} 
+                />
+                {errors.aadhaarNumber && <p className="error">{errors.aadhaarNumber}</p>}
+              </div>
+            </div>
 
-          <input name="aadhaarNumber" placeholder="Aadhaar Number" onChange={handleChange} />
-          <p className="error">{errors.aadhaarNumber}</p>
+            <div className="form-row">
+              <div className="image-upload-section">
+                <label className="image-upload-label">Profile Photo</label>
+                <ImageUploadSimple
+                  onUploadSuccess={(response) => {
+                    setProfilePhotoUrl(response.url);
+                    setProfilePhoto(response);
+                    setErrors({ ...errors, profilePhoto: "" });
+                  }}
+                  onUploadError={(error) => {
+                    setErrors({ ...errors, profilePhoto: "Upload failed" });
+                  }}
+                  folder="profile-photos"
+                  fileName={`profile-${Date.now()}`}
+                  accept="image/*"
+                />
+                {errors.profilePhoto && <p className="error">{errors.profilePhoto}</p>}
+              </div>
+              <div className="image-upload-section">
+                <label className="image-upload-label">Aadhaar Card Photo</label>
+                <ImageUploadSimple
+                  onUploadSuccess={(response) => {
+                    setAadhaarPhotoUrl(response.url);
+                    setAadhaarPhoto(response);
+                    setErrors({ ...errors, aadhaarPhoto: "" });
+                  }}
+                  onUploadError={(error) => {
+                    setErrors({ ...errors, aadhaarPhoto: "Upload failed" });
+                  }}
+                  folder="aadhaar-cards"
+                  fileName={`aadhaar-${Date.now()}`}
+                  accept="image/*"
+                />
+                {errors.aadhaarPhoto && <p className="error">{errors.aadhaarPhoto}</p>}
+              </div>
+            </div>
 
-          <label>Upload Profile Photo</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setProfilePhoto(e.target.files[0]);
-              setErrors({ ...errors, profilePhoto: "" });
-            }}
-          />
-          <p className="error">{errors.profilePhoto}</p>
-
-          <label>Upload Aadhaar Photo</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setAadhaarPhoto(e.target.files[0]);
-              setErrors({ ...errors, aadhaarPhoto: "" });
-            }}
-          />
-          <p className="error">{errors.aadhaarPhoto}</p>
-
-          <button type="submit">Submit Profile</button>
-        </form>
-      )}
+            <div className="btn-group">
+              <button type="button" className="btn btn-secondary" onClick={() => navigate("/dashboard")}>
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Submit Profile
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

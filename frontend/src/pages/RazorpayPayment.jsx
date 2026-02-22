@@ -105,7 +105,7 @@ export default function RazorpayPayment() {
 
             // Razorpay checkout options
             const options = {
-                key: process.env.REACT_APP_RAZORPAY_KEY_ID || "rzp_test_YourKeyHere",
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_YourKeyHere",
                 amount: order.amount,
                 currency: order.currency,
                 name: "Hostelite",

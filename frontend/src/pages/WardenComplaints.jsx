@@ -4,14 +4,10 @@ import { useAuth } from "../contexts/AuthContext";
 import "../styles/WardenComplaints.css";
 
 export default function WardenComplaints() {
-  const { user } = useAuth();
+  const { user: _user } = useAuth(); // Prefix with underscore to indicate unused
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
-
-  useEffect(() => {
-    fetchComplaints();
-  }, []);
 
   const fetchComplaints = async () => {
     try {
@@ -39,6 +35,10 @@ export default function WardenComplaints() {
       setProcessingId(null);
     }
   };
+
+  useEffect(() => {
+    fetchComplaints();
+  }, []);
 
   const markAsResolved = async (id) => {
     try {
