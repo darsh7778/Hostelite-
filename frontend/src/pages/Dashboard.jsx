@@ -29,7 +29,6 @@ export default function Dashboard() {
     students: 0,
     wardens: 0,
     total: 0,
-    payments: 0,
     complaints: { pending: 0, resolved: 0 },
   });
   const [search, setSearch] = useState("");
@@ -91,7 +90,6 @@ export default function Dashboard() {
         students,
         wardens,
         total: users.length,
-        payments: Math.floor(Math.random() * 50) + 10, // mock payments
         complaints: { pending: 0, resolved: 0 }, // handled separately
       });
     } catch (err) {
@@ -168,13 +166,6 @@ export default function Dashboard() {
               icon={<Shield size={24} />}
               color="orange"
               trend="+5%"
-            />
-            <StatCard
-              title="Payments"
-              value={stats.payments}
-              icon={<CreditCard size={24} />}
-              color="purple"
-              trend="+18%"
             />
           </div>
 
@@ -307,12 +298,6 @@ export default function Dashboard() {
               onClick={() => navigate("/complaints")}
             />
             <DashboardCard
-              title="Fee Payment"
-              description="Pay hostel fees online"
-              icon={<CreditCard size={32} />}
-              onClick={() => navigate("/payments")}
-            />
-            <DashboardCard
               title="Today's Meals"
               description="See today's meal plan"
               icon={<Utensils size={32} />}
@@ -347,13 +332,6 @@ export default function Dashboard() {
               icon={<Users size={32} />}
               onClick={() => navigate("/admin/users")}
             />
-            <DashboardCard
-              title="View Payments"
-              description="Check hostel payments"
-              icon={<CreditCard size={32} />}
-              onClick={() => navigate("/admin/payments")}
-            />
-
             <DashboardCard
               title="Hostel Reports"
               description="Generate system reports"

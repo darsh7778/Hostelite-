@@ -60,9 +60,6 @@ export default function Navbar() {
             <li>
               <Link to="/complaints">Complaints</Link>
             </li>
-            <li>
-              <Link to="/payments">Pay Fees</Link>
-            </li>
           </>
         )}
 
@@ -76,9 +73,6 @@ export default function Navbar() {
           <>
             <li>
               <Link to="/admin/users">Manage Users</Link>
-            </li>
-            <li>
-              <Link to="/admin/payments">Payments</Link>
             </li>
           </>
         )}

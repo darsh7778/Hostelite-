@@ -1,6 +1,5 @@
 const Complaint = require("../models/Complaint");
 const MealRating = require("../models/MealRating");
-const Payment = require("../models/Payment");
 const User = require("../models/User");
 
 
@@ -51,35 +50,6 @@ exports.deleteRating = async (req, res) => {
     if (!rating) return res.status(404).json({ message: "Rating not found" });
 
     res.json({ message: "Rating deleted", rating });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-
-// Get all payments
-exports.getAllPayments = async (req, res) => {
-  try {
-    const payments = await Payment.find().populate("student", "name email roomNumber");
-    res.json({ payments });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-// Update payment status
-exports.updatePaymentStatus = async (req, res) => {
-  try {
-    const { paymentId } = req.params;
-    const { status } = req.body; // "paid" | "pending" | "failed"
-
-    const payment = await Payment.findById(paymentId);
-    if (!payment) return res.status(404).json({ message: "Payment not found" });
-
-    payment.status = status;
-    await payment.save();
-
-    res.json({ message: `Payment ${status}`, payment });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

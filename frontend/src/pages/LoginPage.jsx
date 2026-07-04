@@ -93,14 +93,6 @@ export default function LoginPage() {
 
   const features = [
     {
-      icon: "💳",
-      title: "Smart Payments",
-      description: "Secure online payment gateway with instant receipts",
-      stats: "99.9% Uptime",
-      image:
-        "https://episodesix.com/hs-fs/hubfs/Customer%20using%20smartphone%20for%20NFC%20payment%20at%20cafe.png?width=750&height=470&name=Customer%20using%20smartphone%20for%20NFC%20payment%20at%20cafe.png",
-    },
-    {
       icon: "🍽️",
       title: "Meal Management",
       description: "Real-time meal feedback and nutrition tracking",
@@ -115,6 +107,14 @@ export default function LoginPage() {
       stats: "24hr Response",
       image:
         "https://www.scanlanspropertymanagement.com/wp-content/uploads/gergheer.jpg",
+    },
+    {
+      icon: "🏠",
+      title: "Room Management",
+      description: "Easy room allocation and maintenance tracking",
+      stats: "98% Satisfaction",
+      image:
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop",
     },
   ];
 
@@ -167,7 +167,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="hero-description">
-            One platform for payments, complaints, and meals.
+            One platform for complaints, meals, and room management.
             <br />
             <span className="highlight">Experience seamless hostel living</span>
           </p>
@@ -302,8 +302,8 @@ export default function LoginPage() {
                 Hostelite is a revolutionary hostel management platform
                 transforming the student living experience across 500+
                 educational institutions worldwide. Our cutting-edge technology
-                seamlessly integrates payments, meal management, and complaint
-                systems into one powerful ecosystem.
+                seamlessly integrates meal management, complaint systems, and room
+                management into one powerful ecosystem.
               </p>
 
               <div className="about-stats">
@@ -327,12 +327,6 @@ export default function LoginPage() {
 
               <div className="about-highlights">
                 <div className="highlight-item">
-                  <div className="highlight-icon">🚀</div>
-                  <div className="highlight-text">
-                    Lightning-fast digital payments and transactions
-                  </div>
-                </div>
-                <div className="highlight-item">
                   <div className="highlight-icon">🍽️</div>
                   <div className="highlight-text">
                     Smart meal planning with real-time feedback system
@@ -342,6 +336,12 @@ export default function LoginPage() {
                   <div className="highlight-icon">🔧</div>
                   <div className="highlight-text">
                     Quick complaint resolution with live tracking
+                  </div>
+                </div>
+                <div className="highlight-item">
+                  <div className="highlight-icon">🏠</div>
+                  <div className="highlight-text">
+                    Efficient room allocation and management
                   </div>
                 </div>
                 <div className="highlight-item">
@@ -465,7 +465,7 @@ export default function LoginPage() {
               <div className="feature-icon-large">⚡</div>
               <h3>Lightning Fast</h3>
               <p>
-                Process payments and submit complaints in seconds, not minutes
+                Submit complaints and manage meals in seconds, not minutes
               </p>
             </div>
 
@@ -505,7 +505,7 @@ export default function LoginPage() {
             <div className="testimonial-card">
               <div className="testimonial-content">
                 Hostelite has completely transformed how I manage my hostel
-                life. The payment system is so convenient and complaint
+                life. The meal system is so convenient and complaint
                 resolution is incredibly fast!
               </div>
               <div className="testimonial-author">
@@ -534,7 +534,7 @@ export default function LoginPage() {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                From payments to complaints, everything is just a tap away. The
+                From meals to complaints, everything is just a tap away. The
                 interface is intuitive and support team is always helpful.
                 Highly recommend!
               </div>

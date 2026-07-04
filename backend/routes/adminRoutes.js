@@ -20,10 +20,6 @@ router.put("/complaints/:complaintId", authMiddleware, checkAdmin, adminControll
 router.get("/ratings", authMiddleware, checkAdmin, adminController.getAllRatings);
 router.delete("/ratings/:ratingId", authMiddleware, checkAdmin, adminController.deleteRating);
 
-// PAYMENTS ROUTES
-router.get("/payments", authMiddleware, checkAdmin, adminController.getAllPayments);
-router.put("/payments/:paymentId", authMiddleware, checkAdmin, adminController.updatePaymentStatus);
-
 // STUDENTS ROUTES
 router.get("/students", authMiddleware, checkAdmin, adminController.getAllStudents);
 router.put("/students/:studentId", authMiddleware, checkAdmin, adminController.updateStudent);

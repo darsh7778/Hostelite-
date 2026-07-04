@@ -38,41 +38,111 @@
   gap: 18px;
 }
 
-.meal-list p {
+.meal-item {
   background: #f9fafb;
   padding: 18px;
   border-radius: 10px;
-  font-size: 1.05rem;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-}
-
-.meal-list span {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-  color: #111827;
-}
-
-/* Hover effect for meal cards */
-.meal-list p {
-  background: #f9fafb;
-  padding: 18px;
-  border-radius: 10px;
-  font-size: 1.05rem;
-  text-align: center;
   border: 1px solid #e5e7eb;
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  cursor: pointer;
 }
 
-.meal-list p:hover {
+.meal-item:hover {
   transform: translateY(-6px);
   background: #ffffff;
   box-shadow: 0 12px 28px rgba(37, 99, 235, 0.25);
   border-color: #2563eb;
 }
 
+.meal-info {
+  margin-bottom: 16px;
+}
+
+.meal-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.meal-value {
+  font-size: 1.05rem;
+  color: #4b5563;
+}
+
+/* Rating section */
+.rating-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: #fbbf24;
+}
+
+.star:hover {
+  color: #f59e0b;
+}
+
+.rating-comment {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  resize: vertical;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.rating-comment:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.submit-rating-btn {
+  width: 100%;
+  padding: 8px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submit-rating-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.submit-rating-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.rating-submitted {
+  display: block;
+  text-align: center;
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
 
 /* 📱 Mobile */
 @media (max-width: 768px) {

@@ -4,7 +4,7 @@
 
 /* Container */
 .warden-meals {
-  max-width: 560px;
+  max-width: 900px;
   margin: 40px auto;
   background: #ffffff;
   padding: 28px 30px;
@@ -22,12 +22,33 @@
   margin-bottom: 6px;
 }
 
+.warden-meals h3 {
+  color: #111827;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.warden-meals h4 {
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
 /* Date & Time */
 .warden-meals .date-time {
   text-align: center;
   font-size: 0.85rem;
   color: #6b7280;
   margin-bottom: 22px;
+}
+
+/* Meal Inputs Container */
+.meal-inputs {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Inputs */
@@ -54,8 +75,8 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-/* Button */
-.warden-meals button {
+/* Save Button */
+.save-btn {
   width: 100%;
   padding: 12px;
   background: #2563eb;
@@ -68,18 +89,12 @@
   transition: background 0.25s ease, transform 0.15s ease;
 }
 
-/* .warden-meals button:hover {
+.save-btn:hover {
   background: #1e40af;
-} */
-
-.warden-meals button:active {
-  transform: scale(0.98);
 }
 
-/* Disabled button (if any) */
-.warden-meals button:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
+.save-btn:active {
+  transform: scale(0.98);
 }
 
 /* Back Button */
@@ -99,11 +114,168 @@
   text-decoration: underline;
 }
 
+/* Rating Section */
+.rating-section {
+  margin-top: 24px;
+}
+
+.rating-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toggle-ratings-btn {
+  padding: 8px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggle-ratings-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Rating Stats */
+.rating-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.stat-card h4 {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.stat-value .average {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.stat-value .out-of {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.stat-count {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* All Ratings */
+.all-ratings {
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.all-ratings::-webkit-scrollbar {
+  width: 6px;
+}
+
+.all-ratings::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.all-ratings::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.rating-card {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 12px;
+}
+
+.rating-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.student-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.meal-type-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.rating-stars {
+  font-size: 1.2rem;
+  color: #fbbf24;
+  margin-bottom: 8px;
+}
+
+.rating-card .rating-comment {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin: 8px 0;
+  font-style: italic;
+}
+
+.rating-time {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.no-ratings {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  padding: 20px;
+}
+
+/* Disabled button (if any) */
+.warden-meals button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
 
 /* ===============================
    MOBILE RESPONSIVE
 ================================ */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .warden-meals {
     margin: 20px 12px;
     padding: 22px 18px;
@@ -113,6 +285,22 @@
     font-size: 1.4rem;
   }
 
+  .rating-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .toggle-ratings-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
   .warden-meals input,
   .warden-meals button {
     font-size: 0.95rem;

@@ -10,8 +10,6 @@ import Layout from "./components/Layout";
 import Complaint from "./pages/Complaint";
 import WardenComplaints from "./pages/WardenComplaints";
 import AdminUsers from "./pages/AdminUsers";
-import AdminPayments from "./pages/AdminPayments";
-import StudentPayment from "./pages/StudentPayment";
 import WardenMeals from "./pages/WardenMeals";
 import StudentMeals from "./pages/StudentMeals";
 import UnderConstruction from "./components/UnderConstruction";
@@ -19,10 +17,6 @@ import SystemSettings from "./pages/SystemSettings";
 import ForgotPassword from "./pages/ForgotPassword";
 import StudentProfile from "./pages/StudentProfile";
 import AdminStudentProfile from "./pages/AdminStudentProfile";
-import AdvancePayment from "./pages/AdvancePayment";
-import RazorpayPayment from "./pages/RazorpayPayment";
-import UpiPayment from "./pages/UpiPayment";
-import DebitCardPayment from "./pages/DebitCardPayment";
 
 export default function App() {
   return (
@@ -52,59 +46,6 @@ export default function App() {
             }
           />
 
-          <Route
-            path="/ratings"
-            element={
-              <ProtectedRoute role="student">
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/payments"
-            element={
-              <ProtectedRoute role="student">
-                <StudentPayment />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/advance-payment"
-            element={
-              <ProtectedRoute role="student">
-                <AdvancePayment />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/razorpay-payment"
-            element={
-              <ProtectedRoute role="student">
-                <RazorpayPayment />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/upi-payment"
-            element={
-              <ProtectedRoute role="student">
-                <UpiPayment />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/debit-card-payment"
-            element={
-              <ProtectedRoute role="student">
-                <DebitCardPayment />
-              </ProtectedRoute>
-            }
-          />
-
           {/* WARDEN */}
           <Route
             path="/warden/complaints"
@@ -121,15 +62,6 @@ export default function App() {
             element={
               <ProtectedRoute role="admin">
                 <AdminUsers />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/payments"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminPayments />
               </ProtectedRoute>
             }
           />
