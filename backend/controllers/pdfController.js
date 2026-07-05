@@ -99,7 +99,6 @@ exports.downloadProfilePDF = async (req, res) => {
         }
         doc.moveDown();
       } catch (error) {
-        console.error("Error adding profile photo to PDF:", error);
         doc.text("(Profile photo could not be loaded)");
         doc.moveDown();
       }
@@ -126,7 +125,6 @@ exports.downloadProfilePDF = async (req, res) => {
         }
         doc.moveDown();
       } catch (error) {
-        console.error("Error adding aadhaar photo to PDF:", error);
         doc.text("(Aadhaar document could not be loaded)");
         doc.moveDown();
       }
@@ -134,7 +132,6 @@ exports.downloadProfilePDF = async (req, res) => {
 
     doc.end();
   } catch (error) {
-    console.error("PDF Generation Error:", error);
     res.status(500).json({
       message: "Error generating PDF",
     });

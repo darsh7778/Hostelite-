@@ -23,7 +23,6 @@ exports.saveTodayMeal = async (req, res) => {
       meal,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Failed to save meal" });
   }
 };
@@ -36,7 +35,6 @@ exports.getTodayMeal = async (req, res) => {
 
     res.status(200).json(meal);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Failed to fetch meal" });
   }
 };

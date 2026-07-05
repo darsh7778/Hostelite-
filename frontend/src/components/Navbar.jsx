@@ -21,7 +21,7 @@ export default function Navbar() {
           setUser(res.data); // update state
           localStorage.setItem("user", JSON.stringify(res.data)); // update localStorage
         } catch (err) {
-          console.log("Failed to fetch user profile:", err);
+          // Error fetching user profile
         }
       }
     };

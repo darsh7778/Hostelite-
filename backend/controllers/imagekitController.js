@@ -36,7 +36,6 @@ exports.uploadFile = async (req, res) => {
       filePath: uploadResponse.filePath,
     });
   } catch (error) {
-    console.error("ImageKit upload error:", error);
     res.status(500).json({
       success: false,
       error: error.message

@@ -56,7 +56,6 @@ exports.registerUser = async (req, res) => {
 
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
-        console.error("REGISTER ERROR:", error);
         res.status(500).json({ message: "Error registering user", error: error.message });
     }
 };
@@ -98,7 +97,6 @@ exports.loginUser = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("LOGIN ERROR:", error);
         res.status(500).json({ message: "Error logging in", error: error.message });
     }
 };
@@ -142,7 +140,6 @@ exports.forgotPassword = async (req, res) => {
     res.json({ message: "OTP sent to email" });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Failed to send OTP" });
   }
 };
@@ -176,7 +173,6 @@ exports.resetPassword = async (req, res) => {
     res.json({ message: "Password updated successfully" });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Failed to reset password" });
   }
 };

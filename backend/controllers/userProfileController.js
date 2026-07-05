@@ -72,7 +72,6 @@ exports.submitProfile = async (req, res) => {
       profile,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -95,7 +94,6 @@ exports.getMyProfile = async (req, res) => {
 
     res.json(profile);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -111,7 +109,6 @@ exports.getAllProfiles = async (req, res) => {
 
     res.json(profiles);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -133,7 +130,6 @@ exports.getProfileByUserId = async (req, res) => {
 
     res.json(profile);
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       message: "Failed to fetch profile",
     });
@@ -158,7 +154,6 @@ exports.getProfileById = async (req, res) => {
 
     res.json(profile);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -195,7 +190,6 @@ exports.adminEditProfile = async (req, res) => {
       profile,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       message: "Failed to update profile",
     });

@@ -37,7 +37,6 @@ const uploadToImageKit = async (file, folderName, fileName = null) => {
       filePath: uploadResponse.filePath,
     };
   } catch (error) {
-    console.error("ImageKit upload error:", error);
     return {
       success: false,
       error: error.message,
@@ -62,7 +61,6 @@ const deleteFromImageKit = async (fileId) => {
     await imagekit.deleteFile(fileId);
     return { success: true };
   } catch (error) {
-    console.error("ImageKit delete error:", error);
     return {
       success: false,
       error: error.message,

@@ -40,7 +40,7 @@ export default function StudentProfile() {
         }
       }
     } catch (err) {
-      console.log("No profile yet");
+      // No profile yet
     }
     setLoading(false);
   };

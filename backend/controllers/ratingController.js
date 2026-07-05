@@ -60,7 +60,6 @@ exports.submitRating = async (req, res) => {
       rating: newRating,
     });
   } catch (error) {
-    console.error("Rating Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -85,7 +84,6 @@ exports.getStudentRatings = async (req, res) => {
 
     res.json(ratings);
   } catch (error) {
-    console.error("Get Student Ratings Error:", error);
     res.status(500).json({ message: "Failed to fetch ratings" });
   }
 };
@@ -114,7 +112,6 @@ exports.getAllRatings = async (req, res) => {
 
     res.json(ratings);
   } catch (error) {
-    console.error("Get All Ratings Error:", error);
     res.status(500).json({ message: "Failed to fetch ratings" });
   }
 };
@@ -159,7 +156,6 @@ exports.getRatingStats = async (req, res) => {
 
     res.json(stats);
   } catch (error) {
-    console.error("Get Rating Stats Error:", error);
     res.status(500).json({ message: "Failed to fetch rating statistics" });
   }
 };
