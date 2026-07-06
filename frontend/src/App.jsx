@@ -65,25 +65,57 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/warden/meals"
+            element={
+              <ProtectedRoute role="warden">
+                <WardenMeals />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/meals"
+            element={
+              <ProtectedRoute role="student">
+                <StudentMeals />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/under-construction"
+            element={
+              <ProtectedRoute role="admin">
+                <UnderConstruction />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/system-settings"
+            element={
+              <ProtectedRoute role="admin">
+                <SystemSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/profile"
+            element={
+              <ProtectedRoute role="student">
+                <StudentProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/student/:id"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminStudentProfile />
+              </ProtectedRoute>
+            }
+          />
         </Route>
-        <Route path="/warden/meals" element={<WardenMeals />} />
-        <Route path="/student/meals" element={<StudentMeals />} />
-        <Route
-          path="/admin/under-construction"
-          element={<UnderConstruction />}
-        />
-        <Route path="/admin/system-settings" element={<SystemSettings />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/student/profile" element={<StudentProfile />} />
-        <Route
-          path="/admin/student/:id"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminStudentProfile />
-            </ProtectedRoute>
-          }
-        />
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" replace />} />
