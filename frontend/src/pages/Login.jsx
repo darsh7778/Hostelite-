@@ -59,7 +59,7 @@ export default function Login() {
     try {
       const res = await API.post("/auth/login", { email, password });
 
-      if (res.data.token && res.data.user) {
+      if (res.data.accessToken && res.data.user) {
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
         } else {
@@ -69,14 +69,13 @@ export default function Login() {
         setShowSuccess(true);
 
         setTimeout(() => {
-          login(res.data.token, res.data.user);
+          login(res.data.accessToken, res.data.user);
           navigate("/dashboard");
         }, 1500);
       } else {
         setError("Invalid response from server");
       }
     } catch (error) {
-      console.error("Login error:", error);
       if (error.response?.status === 401) {
         setError("Invalid email or password");
       } else if (error.response?.status === 429) {

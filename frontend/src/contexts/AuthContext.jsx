@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import API from "../services/api";
 
 const AuthContext = createContext();
 
@@ -9,31 +10,36 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
 
     // load auth data on referesh
 
     useEffect(() => {
-        const savedToken = localStorage.getItem("token");
+        const savedAccessToken = localStorage.getItem("accessToken");
         const savedUser = localStorage.getItem("user");
 
-        if (savedToken && savedUser) {
-            setToken(savedToken);
+        if (savedAccessToken && savedUser) {
+            setAccessToken(savedAccessToken);
             setUser(JSON.parse(savedUser));
         }
         setLoading(false);
     }, []);
 
-    const login = (token, user) => {
-        localStorage.setItem("token", token);
+    const login = (accessToken, user) => {
+        localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        setToken(token);
+        setAccessToken(accessToken);
         setUser(user);
     };
-    const logout = () => {
-        localStorage.removeItem("token");
+    const logout = async () => {
+        try {
+            await API.post("/auth/logout");
+        } catch (error) {
+            // Continue with local logout even if backend call fails
+        }
+        localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
-        setToken(null);
+        setAccessToken(null);
         setUser(null);
     };
 
@@ -41,10 +47,10 @@ export const AuthProvider = ({ children }) => {
          <AuthContext.Provider 
             value={{ 
                 user,
-                token,
+                accessToken,
                 login,
                 logout,
-                isAuthenticated: !!token,
+                isAuthenticated: !!accessToken,
                 loading
             }}
             >

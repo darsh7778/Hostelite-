@@ -60,7 +60,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// LOGIN (UNCHANGED)
+// LOGIN
 exports.loginUser = async (req, res) => {
     try {
         if (!req.body) return res.status(400).json({ message: "Request body is missing" });
@@ -81,14 +81,36 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        const token = jwt.sign(
+        // Generate access token (short-lived - 15 minutes)
+        const accessToken = jwt.sign(
             { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        // Generate refresh token (long-lived - 7 days)
+        const refreshToken = jwt.sign(
+            { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
+        // Hash refresh token and store in database
+        const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+        user.refreshToken = hashedRefreshToken;
+        await user.save();
+
+        // Set refresh token in httpOnly cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: '/'
+        });
+
         res.json({
-            token,
+            accessToken,
             user: {
                 id: user._id,
                 name: user.name,
@@ -177,4 +199,66 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+// REFRESH TOKEN
+exports.refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
 
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token provided" });
+    }
+
+    // Verify refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user || !user.refreshToken) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    // Verify refresh token matches the one in database
+    const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    // Generate new access token
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ accessToken });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid refresh token" });
+  }
+};
+
+// LOGOUT
+exports.logout = async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
+
+    if (refreshToken) {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+
+      if (user) {
+        user.refreshToken = null;
+        await user.save();
+      }
+    }
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/'
+    });
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error logging out" });
+  }
+};
