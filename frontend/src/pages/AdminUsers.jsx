@@ -29,7 +29,8 @@ export default function AdminUsers() {
       const res = await API.get("/users");
       setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      alert("Failed to fetch users");
+      console.error("Failed to fetch users:", err);
+      alert(`Failed to fetch users: ${err.response?.data?.message || err.message}`);
     }
   };
 

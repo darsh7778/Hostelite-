@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "https://hostelite-p6br.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 if (!import.meta.env.VITE_API_URL) {
   console.warn(

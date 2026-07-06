@@ -143,13 +143,15 @@ export default function Register() {
 
       // Show success animation
       setShowSuccess(true);
-      
+
       setTimeout(() => {
         alert("Registration successful!");
         navigate("/login");
       }, 1500);
     } catch (error) {
       console.error('Registration error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error data:', error.response?.data);
       if (error.response?.status === 409) {
         setError("Email already exists");
       } else if (error.response?.status === 429) {
@@ -159,7 +161,7 @@ export default function Register() {
       } else if (error.code === 'NETWORK_ERROR') {
         setError("Network error. Please check your connection");
       } else {
-        setError("Registration failed. Please try again.");
+        setError(`Registration failed: ${error.message}`);
       }
     } finally {
       setLoading(false);
