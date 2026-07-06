@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000/api",
-  withCredentials: true, // Important for cookies
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 });
 
 let isRefreshing = false;
@@ -16,9 +16,11 @@ const processQueue = (error, token = null) => {
       prom.resolve(token);
     }
   });
+
   failedQueue = [];
 };
 
+// Attach access token to every request
 API.interceptors.request.use(
   (req) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -29,18 +31,19 @@ API.interceptors.request.use(
 
     return req;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
+// Refresh expired access token automatically
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If error is 401 and we haven't tried refreshing yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -56,22 +59,31 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.post("http://localhost:8000/api/auth/refresh-token", {}, {
-          withCredentials: true,
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
 
         const { accessToken } = response.data;
+
         localStorage.setItem("accessToken", accessToken);
 
         processQueue(null, accessToken);
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
         return API(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
+
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
+
         window.location.href = "/";
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
