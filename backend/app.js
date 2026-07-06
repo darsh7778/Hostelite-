@@ -9,6 +9,7 @@ const app = express();
 connectDB();
 
 // Middleware
+
 const allowedOrigins = [
   "http://localhost:5173",          // Local frontend
   "https://hostelite-xi.vercel.app" // Your deployed frontend

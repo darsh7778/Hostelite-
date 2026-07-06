@@ -1,7 +1,15 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+if (!import.meta.env.VITE_API_URL) {
+  console.warn(
+    "⚠️ VITE_API_URL not found in .env — falling back to http://localhost:8000"
+  );
+}
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -59,13 +67,7 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
-          {},
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(`${BASE_URL}/api/auth/refresh-token`, {}, { withCredentials: true });
 
         const { accessToken } = response.data;
 
