@@ -12,6 +12,7 @@ connectDB();
 
 const allowedOrigins = [
   "http://localhost:5173",          // Local frontend
+  "http://localhost:5174",          // Alternative local port
   "http://localhost:3000",          // Alternative local port
   "https://hostelite-xi.vercel.app", // Your deployed frontend
 ];
@@ -27,7 +28,6 @@ app.use(
       }
 
       // Temporarily allow all origins for debugging
-      console.log("Origin not in allowed list:", origin);
       return callback(null, true);
     },
     credentials: true,
