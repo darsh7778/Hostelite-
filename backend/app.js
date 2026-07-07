@@ -8,6 +8,9 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// Trust proxy for rate limiting (required for Render/deployment)
+app.set('trust proxy', true);
+
 // Middleware
 
 const allowedOrigins = [
