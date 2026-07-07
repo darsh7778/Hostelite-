@@ -80,12 +80,31 @@ Protected routes with role-based access control using ProtectedRoute component.
 
 ## Authentication Flow
 
-### Registration
+### Registration (with Email OTP Verification)
 - POST /api/auth/register
 - Validates role limits (max 1 admin, 2 wardens)
 - Hashes password with bcrypt
-- Creates user with default role "student"
+- Generates 6-digit OTP and hashes it with SHA-256
+- Sends OTP to user's email via Nodemailer
+- Stores user temporarily with OTP (10-minute expiry)
+- Returns success message with email
+- User must verify OTP to complete registration
+
+### OTP Verification
+- POST /api/auth/verify-otp
+- Accepts email and 6-digit OTP
+- Validates OTP against hashed value
+- Checks OTP expiry (10 minutes)
+- Clears OTP fields from user document
 - Returns success message
+- User can now login
+
+### Resend OTP
+- POST /api/auth/resend-otp
+- Generates new 6-digit OTP
+- Invalidates previous OTP
+- Sends new OTP to email
+- Rate limited (3 requests per 15 minutes)
 
 ### Login
 - POST /api/auth/login
@@ -112,9 +131,23 @@ Protected routes with role-based access control using ProtectedRoute component.
 - Frontend clears access token from localStorage
 - Redirects to login
 
-### Password Reset
-- POST /api/auth/forgot-password - Generates OTP, sends email
-- POST /api/auth/reset-password - Validates OTP, updates password
+### Password Reset (with OTP)
+- POST /api/auth/forgot-password
+- Validates email exists in database
+- Generates 6-digit OTP and hashes it with SHA-256
+- Stores OTP with 15-minute expiry
+- Sends OTP to user's email via Nodemailer
+- Rate limited (3 requests per 15 minutes)
+
+- POST /api/auth/reset-password
+- Validates email, OTP, and new password
+- Verifies OTP against hashed value
+- Checks OTP expiry (15 minutes)
+- Hashes new password with bcrypt
+- Updates password in database
+- Clears OTP fields
+- Invalidates all sessions (clears refresh tokens)
+- Returns success message
 
 ### Token Storage
 - **Access Token:** localStorage (client-side) - 15 minutes
@@ -194,7 +227,9 @@ Not used - stateless JWT authentication with refresh token mechanism
 ### Route Groups
 
 - **/auth** - Authentication
-  - POST /auth/register
+  - POST /auth/register - Send OTP for email verification
+  - POST /auth/verify-otp - Verify OTP and complete registration
+  - POST /auth/resend-otp - Resend OTP (rate limited)
   - POST /auth/login
   - POST /auth/refresh-token
   - POST /auth/logout
@@ -247,7 +282,9 @@ Not used - stateless JWT authentication with refresh token mechanism
 - role (enum: student, warden, admin)
 - room (ref: Room)
 - hostelName
-- otp, otpExpires (for password reset)
+- registrationOTP, registrationOTPExpires (for email verification)
+- registrationData (temporary storage during registration)
+- resetOTP, resetOTPExpires (for password reset)
 - refreshToken (hashed refresh token storage)
 
 ### UserProfile Model
@@ -317,15 +354,34 @@ Not used - stateless JWT authentication with refresh token mechanism
 ## Environment Variables
 
 ### Required (.env)
-- MONGO_URI - MongoDB connection string
-- JWT_SECRET - JWT signing secret
-- PORT - Server port (default: 8000)
-- EMAIL_USER - Gmail for OTP
-- EMAIL_PASS - Gmail app password
-- IMAGEKIT_PUBLIC_KEY - ImageKit public key
-- IMAGEKIT_PRIVATE_KEY - ImageKit private key
-- IMAGEKIT_URL_ENDPOINT - ImageKit URL endpoint
-- NODE_ENV - Environment (development/production)
+Create a `.env` file in the `backend/` directory with the following variables:
+
+```env
+# Server Configuration
+PORT=8000
+NODE_ENV=development
+
+# Database
+MONGO_URI=mongodb://localhost:27017/hostelite
+
+# JWT Authentication
+JWT_SECRET=your-secret-key-here
+
+# Email Configuration (for OTP)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-gmail-app-password
+
+# ImageKit Configuration (for file uploads)
+IMAGEKIT_PUBLIC_KEY=your-imagekit-public-key
+IMAGEKIT_PRIVATE_KEY=your-imagekit-private-key
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your-id
+```
+
+### Notes
+- **EMAIL_PASS**: For Gmail, generate an App Password at https://myaccount.google.com/apppasswords
+- **JWT_SECRET**: Use a strong, random string for production
+- **IMAGEKIT**: Optional - only required if using ImageKit for file uploads
+- **NODE_ENV**: Set to `production` for production deployment
 
 ## Third-Party Libraries
 
@@ -335,6 +391,7 @@ Not used - stateless JWT authentication with refresh token mechanism
 - bcryptjs, jsonwebtoken
 - cookie-parser
 - multer, nodemailer
+- express-rate-limit
 - imagekit, pdfkit
 
 ### Frontend
@@ -379,14 +436,26 @@ Not used - stateless JWT authentication with refresh token mechanism
 
 ## Email Flow
 
+### Registration OTP
+1. User submits registration form
+2. Backend validates input and role limits
+3. Generates 6-digit OTP and hashes with SHA-256
+4. Stores user temporarily with OTP (10-minute expiry)
+5. Nodemailer sends OTP via Gmail SMTP
+6. User enters OTP on verification page
+7. Backend validates OTP and expiry
+8. Clears OTP fields, registration complete
+9. User can now login
+
 ### Password Reset OTP
 1. User requests reset with email
-2. Backend generates 4-digit OTP
-3. OTP stored in User document with 5-min expiry
+2. Backend generates 6-digit OTP
+3. OTP hashed with SHA-256, stored with 15-min expiry
 4. Nodemailer sends email via Gmail SMTP
-5. User enters OTP
+5. User enters OTP and new password
 6. Backend validates OTP and expiry
 7. Password updated if valid
+8. All sessions invalidated (refresh tokens cleared)
 
 ## Frontend API Service
 
