@@ -50,7 +50,7 @@ export default function GetStartedForm() {
         <input
           type="hidden"
           name="_redirect"
-          value="https://hostelite-xi.vercel.app/thank-you"
+          value={window.location.origin + "/thank-you"}
         />
 
         <button type="submit" className="cta-primary">
