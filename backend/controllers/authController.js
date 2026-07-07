@@ -68,8 +68,13 @@ exports.registerUser = async (req, res) => {
 
         await tempUser.save();
 
-        // Send OTP email
-        await sendRegistrationOTP(email, name, otp);
+        // Send OTP email (non-blocking)
+        try {
+          await sendRegistrationOTP(email, name, otp);
+        } catch (emailError) {
+          console.error("Email sending failed:", emailError.message);
+          // Continue even if email fails for now
+        }
 
         res.status(200).json({
             message: "OTP sent to your email for verification",
@@ -154,8 +159,13 @@ exports.resendOTP = async (req, res) => {
 
         await user.save();
 
-        // Send new OTP email
-        await sendResendOTP(email, user.name, otp);
+        // Send new OTP email (non-blocking)
+        try {
+          await sendResendOTP(email, user.name, otp);
+        } catch (emailError) {
+          console.error("Email sending failed:", emailError.message);
+          // Continue even if email fails for now
+        }
 
         res.status(200).json({ message: "New OTP sent to your email" });
     } catch (error) {
@@ -252,8 +262,13 @@ exports.forgotPassword = async (req, res) => {
     user.resetOTPExpires = otpExpiry;
     await user.save();
 
-    // Send OTP email
-    await sendPasswordResetOTP(email, user.name, otp);
+    // Send OTP email (non-blocking)
+    try {
+      await sendPasswordResetOTP(email, user.name, otp);
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError.message);
+      // Continue even if email fails for now
+    }
 
     res.json({ message: "OTP sent to your email for password reset" });
 
