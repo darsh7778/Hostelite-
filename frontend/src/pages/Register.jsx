@@ -85,30 +85,6 @@ export default function Register() {
     return 'Strong';
   };
 
-  const handleSocialLogin = async (provider) => {
-    setLoading(true);
-    setError("");
-    
-    try {
-      // For demo purposes, simulate social login
-      // In production, this would redirect to OAuth provider
-      if (provider === 'google') {
-        // Simulate Google OAuth flow
-        const googleAuthUrl = `${API.defaults.baseURL || 'http://localhost:5000'}/auth/google`;
-        window.location.href = googleAuthUrl;
-      } else if (provider === 'microsoft') {
-        // Simulate Microsoft OAuth flow
-        const microsoftAuthUrl = `${API.defaults.baseURL || 'http://localhost:5000'}/auth/microsoft`;
-        window.location.href = microsoftAuthUrl;
-      }
-    } catch (error) {
-      console.error('Social login error:', error);
-      setError(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login failed. Please try again.`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const registerHandler = async (e) => {
     e.preventDefault();
     setError("");
