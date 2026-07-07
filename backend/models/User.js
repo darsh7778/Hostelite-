@@ -39,11 +39,23 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Hostelite",
     },
-    otp: {
+    // Password Reset OTP
+    resetOTP: {
       type: String,
     },
-    otpExpires: {
+    resetOTPExpires: {
       type: Date,
+    },
+    // Registration OTP
+    registrationOTP: {
+      type: String,
+    },
+    registrationOTPExpires: {
+      type: Date,
+    },
+    registrationData: {
+      type: Object,
+      default: null,
     },
     refreshToken: {
       type: String,

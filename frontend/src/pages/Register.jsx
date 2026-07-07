@@ -6,11 +6,13 @@ import "../styles/Login.css";
 export default function Register() {
   const navigate = useNavigate();
 
+  const [step, setStep] = useState(1); // Step 1: Registration, Step 2: OTP Verification
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("student");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -19,14 +21,19 @@ export default function Register() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showSuccess, setShowSuccess] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [otpExpiryTime, setOtpExpiryTime] = useState(null);
 
   const nameInputRef = useRef(null);
   const emailInputRef = useRef(null);
+  const otpInputRef = useRef(null);
 
   useEffect(() => {
-    // Auto-focus name input
-    if (nameInputRef.current) {
+    // Auto-focus name input on step 1, OTP input on step 2
+    if (step === 1 && nameInputRef.current) {
       nameInputRef.current.focus();
+    } else if (step === 2 && otpInputRef.current) {
+      otpInputRef.current.focus();
     }
 
     // Track mouse position for interactive effects
@@ -38,7 +45,7 @@ export default function Register() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [step]);
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -141,17 +148,12 @@ export default function Register() {
     try {
       const res = await API.post("/auth/register", { name, email, password, role });
 
-      // Show success animation
-      setShowSuccess(true);
-
-      setTimeout(() => {
-        alert("Registration successful!");
-        navigate("/login");
-      }, 1500);
+      // Move to OTP verification step
+      setStep(2);
+      setOtpExpiryTime(Date.now() + 10 * 60 * 1000); // 10 minutes
+      setError("");
     } catch (error) {
       console.error('Registration error:', error);
-      console.error('Error response:', error.response);
-      console.error('Error data:', error.response?.data);
       if (error.response?.status === 409) {
         setError("Email already exists");
       } else if (error.response?.status === 429) {
@@ -165,6 +167,64 @@ export default function Register() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const verifyOTPHandler = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!otp || otp.length !== 6) {
+      setError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await API.post("/auth/verify-otp", { email, otp });
+
+      // Show success and redirect to login
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        alert("Email verified successfully! Please login.");
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("OTP verification failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendOTPHandler = async () => {
+    setError("");
+    setResendLoading(true);
+
+    try {
+      const res = await API.post("/auth/resend-otp", { email });
+
+      // Reset OTP expiry time
+      setOtpExpiryTime(Date.now() + 10 * 60 * 1000);
+      setOtp("");
+      setError("");
+
+      alert("New OTP sent to your email");
+    } catch (error) {
+      console.error('Resend OTP error:', error);
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Failed to resend OTP. Please try again.");
+      }
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -190,6 +250,9 @@ export default function Register() {
       case 'role':
         setRole(value);
         break;
+      case 'otp':
+        setOtp(value);
+        break;
     }
   };
 
@@ -214,11 +277,13 @@ export default function Register() {
         <div className="auth-header">
           <div className="auth-logo">
             <div className="logo-icon">
-              <span className="logo-text">👤</span>
+              <span className="logo-text">{step === 1 ? "👤" : "🔐"}</span>
               <div className="logo-glow"></div>
             </div>
-            <h2 className="auth-title">Create Account</h2>
-            <p className="auth-subtitle">Join Hostelite and manage your hostel life</p>
+            <h2 className="auth-title">{step === 1 ? "Create Account" : "Verify Email"}</h2>
+            <p className="auth-subtitle">
+              {step === 1 ? "Join Hostelite and manage your hostel life" : "Enter the OTP sent to your email"}
+            </p>
           </div>
         </div>
 
@@ -237,154 +302,217 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={registerHandler} className="auth-form">
-          <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'name' ? 'focused' : ''}`}>
-              <span className="input-icon">👤</span>
-              <input
-                ref={nameInputRef}
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                onFocus={() => handleInputFocus('name')}
-                onBlur={handleInputBlur}
-                required
-                className="auth-input"
-              />
-              <div className="input-border"></div>
-            </div>
-          </div>
-
-          <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'email' ? 'focused' : ''}`}>
-              <span className="input-icon">📧</span>
-              <input
-                ref={emailInputRef}
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                onFocus={() => handleInputFocus('email')}
-                onBlur={handleInputBlur}
-                required
-                className="auth-input"
-              />
-              <div className="input-border"></div>
-            </div>
-          </div>
-
-          <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'password' ? 'focused' : ''}`}>
-              <span className="input-icon">🔐</span>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-                onFocus={() => handleInputFocus('password')}
-                onBlur={handleInputBlur}
-                required
-                className="auth-input"
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
-              </button>
-              <div className="input-border"></div>
-            </div>
-            
-            {/* Password strength indicator */}
-            {password && (
-              <div className="password-strength">
-                <div className="strength-bar">
-                  <div 
-                    className="strength-fill" 
-                    style={{ 
-                      width: `${(calculatePasswordStrength(password) / 4) * 100}%`,
-                      backgroundColor: getPasswordStrengthColor()
-                    }}
+        <form onSubmit={step === 1 ? registerHandler : verifyOTPHandler} className="auth-form">
+          {step === 1 ? (
+            <>
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'name' ? 'focused' : ''}`}>
+                  <span className="input-icon">👤</span>
+                  <input
+                    ref={nameInputRef}
+                    type="text"
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    onFocus={() => handleInputFocus('name')}
+                    onBlur={handleInputBlur}
+                    required
+                    className="auth-input"
                   />
+                  <div className="input-border"></div>
                 </div>
-                <span className="strength-text" style={{ color: getPasswordStrengthColor() }}>
-                  {getPasswordStrengthText()}
-                </span>
               </div>
-            )}
-          </div>
 
-          <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'confirmPassword' ? 'focused' : ''}`}>
-              <span className="input-icon">🔁</span>
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                onFocus={() => handleInputFocus('confirmPassword')}
-                onBlur={handleInputBlur}
-                required
-                className="auth-input"
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'email' ? 'focused' : ''}`}>
+                  <span className="input-icon">📧</span>
+                  <input
+                    ref={emailInputRef}
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    onFocus={() => handleInputFocus('email')}
+                    onBlur={handleInputBlur}
+                    required
+                    className="auth-input"
+                  />
+                  <div className="input-border"></div>
+                </div>
+              </div>
+
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'password' ? 'focused' : ''}`}>
+                  <span className="input-icon">🔐</span>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    onFocus={() => handleInputFocus('password')}
+                    onBlur={handleInputBlur}
+                    required
+                    className="auth-input"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                  <div className="input-border"></div>
+                </div>
+                
+                {/* Password strength indicator */}
+                {password && (
+                  <div className="password-strength">
+                    <div className="strength-bar">
+                      <div 
+                        className="strength-fill" 
+                        style={{ 
+                          width: `${(calculatePasswordStrength(password) / 4) * 100}%`,
+                          backgroundColor: getPasswordStrengthColor()
+                        }}
+                      />
+                    </div>
+                    <span className="strength-text" style={{ color: getPasswordStrengthColor() }}>
+                      {getPasswordStrengthText()}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'confirmPassword' ? 'focused' : ''}`}>
+                  <span className="input-icon">🔁</span>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    onFocus={() => handleInputFocus('confirmPassword')}
+                    onBlur={handleInputBlur}
+                    required
+                    className="auth-input"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                  <div className="input-border"></div>
+                </div>
+              </div>
+
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'role' ? 'focused' : ''}`}>
+                  <span className="input-icon">🏷️</span>
+                  <select
+                    value={role}
+                    onChange={(e) => handleInputChange('role', e.target.value)}
+                    onFocus={() => handleInputFocus('role')}
+                    onBlur={handleInputBlur}
+                    required
+                    className="auth-input"
+                  >
+                    <option value="student"> Student</option>
+                    <option value="warden">Warden</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <div className="input-border"></div>
+                </div>
+              </div>
+
+              <div className="form-options">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    disabled={loading}
+                  />
+                  <span className="checkbox-custom"></span>
+                  I agree to the Terms of Service and Privacy Policy
+                </label>
+              </div>
+
+              <button type="submit" disabled={loading} className="auth-button">
+                {loading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    <span className="button-text">Send OTP</span>
+                    <span className="button-arrow">→</span>
+                  </>
+                )}
               </button>
-              <div className="input-border"></div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <div className="input-group">
+                <div className={`input-wrapper ${isFocused === 'otp' ? 'focused' : ''}`}>
+                  <span className="input-icon">🔢</span>
+                  <input
+                    ref={otpInputRef}
+                    type="text"
+                    placeholder="Enter 6-digit OTP"
+                    value={otp}
+                    onChange={(e) => handleInputChange('otp', e.target.value)}
+                    onFocus={() => handleInputFocus('otp')}
+                    onBlur={handleInputBlur}
+                    maxLength={6}
+                    required
+                    className="auth-input"
+                    style={{ letterSpacing: "8px", textAlign: "center", fontSize: "20px" }}
+                  />
+                  <div className="input-border"></div>
+                </div>
+              </div>
 
-          <div className="input-group">
-            <div className={`input-wrapper ${isFocused === 'role' ? 'focused' : ''}`}>
-              <span className="input-icon">🏷️</span>
-              <select
-                value={role}
-                onChange={(e) => handleInputChange('role', e.target.value)}
-                onFocus={() => handleInputFocus('role')}
-                onBlur={handleInputBlur}
-                required
-                className="auth-input"
+              <p style={{ textAlign: "center", color: "#666", fontSize: "14px", marginBottom: "20px" }}>
+                OTP sent to: <strong>{email}</strong>
+              </p>
+
+              <button type="submit" disabled={loading} className="auth-button">
+                {loading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <span className="button-text">Verify OTP</span>
+                    <span className="button-arrow">→</span>
+                  </>
+                )}
+              </button>
+
+              <button 
+                type="button" 
+                onClick={resendOTPHandler} 
+                disabled={resendLoading}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "transparent",
+                  color: "#007bff",
+                  border: "1px solid #007bff",
+                  borderRadius: "8px",
+                  cursor: resendLoading ? "not-allowed" : "pointer",
+                  marginTop: "15px",
+                  fontSize: "14px"
+                }}
               >
-                <option value="student"> Student</option>
-                <option value="warden">Warden</option>
-                <option value="admin">Admin</option>
-              </select>
-              <div className="input-border"></div>
-            </div>
-          </div>
-
-          <div className="form-options">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-                disabled={loading}
-              />
-              <span className="checkbox-custom"></span>
-              I agree to the Terms of Service and Privacy Policy
-            </label>
-          </div>
-
-          <button type="submit" disabled={loading} className="auth-button">
-            {loading ? (
-              <>
-                <span className="spinner"></span>
-                Creating Account...
-              </>
-            ) : (
-              <>
-                <span className="button-text">Create Account</span>
-                <span className="button-arrow">→</span>
-              </>
-            )}
-          </button>
+                {resendLoading ? "Sending..." : "Resend OTP"}
+              </button>
+            </>
+          )}
         </form>
 
         <p className="auth-footer">
